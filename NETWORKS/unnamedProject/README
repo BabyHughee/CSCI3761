@@ -2,14 +2,14 @@
 TRYSTAN KAES
 ID 108652414 (kaest)
 
-CSCI [class]
+CSCI 3761
 
-Assignment
+Lab 2
 
-****************************************
-** TO COMPILE ----- 'make all'	      **
-** TO RUN --------- './name' #binary  **
-****************************************
+******************************************************
+** TO COMPILE ----- 'make all'	                    **
+** TO RUN --------- './kaest_networksLAB2' #binary  **
+******************************************************
 
 DESCRIPTION:
 

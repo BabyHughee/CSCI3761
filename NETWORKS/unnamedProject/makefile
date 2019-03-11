@@ -1,10 +1,10 @@
 CC=g++
 LD=g++
 CC_FLAGS=-g -std=c++11
-OBJECTS= assignment.o implementations.o
-TEST= test.o implementation.o
-OB= kaest_CSCI2421_Assignment
-BINARY=name
+OBJECTS= kaest_networksLAB2.o # implementations.o
+TEST= test.o # implementation.o
+OB= kaest_networksLAB2
+BINARY=kaest_networksLAB2
 
 all: $(OBJECTS) #docs
 	$(LD) -o $(BINARY) $(OBJECTS)
