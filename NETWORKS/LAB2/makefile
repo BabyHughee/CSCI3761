@@ -1,19 +1,19 @@
 CC=g++
 LD=g++
 CC_FLAGS=-g -std=c++11
-OBJECTS= kaest_networksLAB2.o # implementations.o
-TEST= test.o # implementation.o
-OB= kaest_networksLAB2
-BINARY=kaest_networksLAB2
+OBJECTS= client.o # implementations.o
+SERVER= server.o # implementation.o
+OB= SERVER
+BINARY=
 
-all: $(OBJECTS) #docs
-	$(LD) -o $(BINARY) $(OBJECTS)
+client: $(OBJECTS)
+	$(LD) -o client $(OBJECTS)
 
-test: $(TEST) test.o
-	$(LD) -o test $(TEST) test.o
+server: $(SERVER)
+	$(LD) -o server $(SERVER)
 
 clean:
-	rm -rf $(OBJECTS) $(TEST) $(BINARY) html latex $(OB).zip test test.o def docbook man rtf
+	rm -rf $(OBJECTS) $(SERVER) $(BINARY) html latex $(OB).zip server server.o def docbook man rtf
 
 %.o: %.cpp
 	$(CC) -c $(CC_FLAGS) $< -o $@
@@ -21,7 +21,7 @@ clean:
 docs:
 	doxygen doxygen.cfg
 
-zip:
-	zip -r $(OB).zip *.cpp *.h *.txt *.csv *.pdf README makefile
-	cp $(OB).zip ~/Desktop/
-	cp -f $(OB).zip ~/kaest/CSCI2421/completeZips
+# zip:
+# 	zip -r $(OB).zip *.cpp *.h *.txt *.csv *.pdf README makefile
+# 	cp $(OB).zip ~/Desktop/
+# 	cp -f $(OB).zip ~/kaest/CSCI2421/completeZips

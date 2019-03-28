@@ -53,9 +53,7 @@ int main(){
     /* ---------Listen--------- */
   cout << "Please enter a message: ";
   bzero(buffer, 256);
-  std::string temp;
-  std::getline(std::cin, temp);
-  buffer = temp;
+  std::cin.getline(buffer, 255, '\n');
 
   msg_size = write(listenSocket, buffer, 255);
   if(msg_size < 0) //Verify if succesful
