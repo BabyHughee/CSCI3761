@@ -37,7 +37,7 @@ int main(){
   if(listenSocket < 0) //Verify if succesful
     error("Error opening socket"); //Well shoot.
 
-  std::string ucdenver = "kaest@csegrid.ucdenver.pvt";
+  std::string ucdenver = "127.0.0.1";
 
   server = gethostbyname(ucdenver.c_str());
 
@@ -59,7 +59,6 @@ int main(){
   cout << "Please enter a message: ";
   bzero(buffer, 256);
   std::cin.getline(buffer, 255, '\n');
-
   msg_size = write(listenSocket, buffer, 255);
   if(msg_size < 0) //Verify if succesful
     error("Error writing"); //Well shoot.
@@ -67,9 +66,9 @@ int main(){
   bzero(buffer,256);
     msg_size = read(listenSocket, buffer, 255);
   if(msg_size < 0) //Verify if succesful
-    error("Error writing"); //Well shoot.
+    error("Error reading"); //Well shoot.
 
-  cout << "The message is: " << buffer << endl;
+  cout << "Server: " << buffer << endl;
 
     return 0;
 }

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <string>
 #include <cstring>
+#include <dirent.h>
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
@@ -14,11 +15,8 @@ using std::cin;
 using std::endl;
 using std::cerr;
 
-
-void error(std::string msg){
-  cerr << (msg);
-  exit(1);
-}
+std::string getCatalog();
+void error(std::string msg);
 
 
 int main(){
@@ -41,7 +39,7 @@ int main(){
     /* ---------Get that server stuffs told other stuffs--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family
   serverAddress.sin_port = htons(inPort);  //declare Port number
-  serverAddress.sin_addr.s_addr = "127.0.0.1";  //Set this to the local IP
+  serverAddress.sin_addr.s_addr = "132.194.186.55";//INADDR_ANY;  //Set this to the local IP
 
     /* ---------Tie it up in a bow--------- */
   if (bind(listenSocket, (struct sockaddr*) &serverAddress, sizeof(serverAddress)) < 0)
@@ -60,7 +58,45 @@ int main(){
   msg_size = read(in_Connect, buffer, 255);
   if(msg_size < 0) //Verify if succesful
     error("Error reading"); //Well shoot.
-  cout << "The message is: " << buffer << endl;
+  cout << "Client: " << buffer << endl;
+
+  /* ---------Return Message--------- */
+ bzero(buffer,256);
+char returnMessage[256] = "Hello Client.";
+std::string catalogue = getCatalog();
+ msg_size = write(in_Connect, catalogue.c_str(), 255);
+ if(msg_size < 0) //Verify if succesful
+   error("Error writing"); //Well shoot.
 
     return 0;
+}
+
+
+void error(std::string msg){
+  cerr << (msg);
+  exit(1);
+}
+
+
+
+std::string getCatalog(){
+  char cwd[PATH_MAX];
+  getcwd(cwd, sizeof(cwd));
+  std::string directory;
+
+  DIR *dir;
+
+  if((dir = opendir(cwd)) == NULL){ cout << "CWD_NOT_FOUND";  }
+
+  struct dirent* i;
+
+  while((i = readdir(dir)) != NULL ){
+      directory.append(i->d_name);
+      directory.append("\n");
+  }
+
+  closedir(dir);
+
+
+   return directory;
 }
