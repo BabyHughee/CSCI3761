@@ -13,7 +13,7 @@ server: $(SERVER)
 	$(LD) -o server $(SERVER)
 
 clean:
-	rm -rf $(OBJECTS) $(SERVER) $(BINARY) html latex $(OB).zip server server.o def docbook man rtf
+	rm -rf $(OBJECTS) $(SERVER) $(BINARY) html latex $(OB).zip client server server.o def docbook man rtf
 
 %.o: %.cpp
 	$(CC) -c $(CC_FLAGS) $< -o $@
