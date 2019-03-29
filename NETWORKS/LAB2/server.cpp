@@ -5,6 +5,8 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string>
+#include <cstring>
+
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
 using std::cout;
