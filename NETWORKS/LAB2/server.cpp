@@ -34,7 +34,7 @@ int main(){
   if(listenSocket < 0) //Verify if succesful
     error("Error opening socket"); //Well shoot.
 
-  // bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
+  memset((char*) &serverAddress, 0, sizeof(serverAddress)); //clearBuffer
 
     /* ---------Get that server stuffs told other stuffs--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family
@@ -54,7 +54,7 @@ int main(){
     error("Error accepting"); //Well shoot.
 
    /* ---------Get Message--------- */
-  bzero(buffer,256);
+  memset(buffer,0,256);
   msg_size = read(in_Connect, buffer, 255);
   if(msg_size < 0) //Verify if succesful
     error("Error reading"); //Well shoot.

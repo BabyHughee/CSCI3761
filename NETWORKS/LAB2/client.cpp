@@ -39,7 +39,7 @@ int main(){
   if(server == NULL) //Verify if succesful
     error("Error finding host"); //Well shoot.
 
-  bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
+  memset((char*) &serverAddress, 0, sizeof(serverAddress)); //clearBuffer
 
     /* ---------Get that stuffs told other stuffs--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family
@@ -52,14 +52,14 @@ int main(){
 
     /* ---------Listen--------- */
   cout << "Please enter a message: ";
-  bzero(buffer, 256);
+  memset(buffer, 0, 256);
   std::cin.getline(buffer, 255, '\n');
 
   msg_size = write(listenSocket, buffer, 255);
   if(msg_size < 0) //Verify if succesful
     error("Error writing"); //Well shoot.
 
-  bzero(buffer,256);
+  memset(buffer, 0, 256);
     msg_size = read(listenSocket, buffer, 255);
   if(msg_size < 0) //Verify if succesful
     error("Error writing"); //Well shoot.
