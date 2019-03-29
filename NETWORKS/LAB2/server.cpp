@@ -34,7 +34,7 @@ int main(){
   if(listenSocket < 0) //Verify if succesful
     error("Error opening socket"); //Well shoot.
 
-  bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
+  // bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
 
     /* ---------Get that server stuffs told other stuffs--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family

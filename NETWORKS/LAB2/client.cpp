@@ -23,7 +23,7 @@ void error(std::string msg){
 int main(){
     /* -------declare all the neccesary integers.------- */
   int listenSocket, msg_size;
-  socklen_t clientSize;
+  // socklen_t clientSize;
   int inPort = 2414; //this is the port and also my student ID
   char  buffer[256]; //this will hold the message recieved and sent.
   struct sockaddr_in serverAddress; //server
@@ -35,7 +35,7 @@ int main(){
   if(listenSocket < 0) //Verify if succesful
     error("Error opening socket"); //Well shoot.
 
-  server = gethostbyname("csegrid.ucdenver.edu");
+  server = gethostbyname("csegrid.ucdenver.pvt");
   if(server == NULL) //Verify if succesful
     error("Error finding host"); //Well shoot.
 
