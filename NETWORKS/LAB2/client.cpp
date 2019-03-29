@@ -37,7 +37,8 @@ int main(){
   if(listenSocket < 0) //Verify if succesful
     error("Error opening socket"); //Well shoot.
 
-  server = gethostbyname("csegrid.ucdenver.edu");
+  char * ucdenver = "csegrid.ucdenver.edu";
+  server = gethostbyname(ucdenver);
   if(server == NULL) //Verify if succesful
     error("Error finding host"); //Well shoot.
 
