@@ -25,7 +25,7 @@ int main(){
     /* -------declare all the neccesary integers.------- */
   int listenSocket, in_Connect, msg_size;
   socklen_t clientSize;
-  int inPort = 4142; //this is the port and also my student ID
+  int inPort = 2414; //this is the port and also my student ID
   char  buffer[256]; //this will hold the message recieved and sent.
   struct sockaddr_in serverAddress; //server
   struct sockaddr_in clientAddress; //client
@@ -41,7 +41,7 @@ int main(){
     /* ---------Get that server stuffs told other stuffs--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family
   serverAddress.sin_port = htons(inPort);  //declare Port number
-  serverAddress.sin_addr.s_addr = INADDR_ANY;  //Set this to the local IP
+  serverAddress.sin_addr.s_addr = "127.0.0.1";  //Set this to the local IP
 
     /* ---------Tie it up in a bow--------- */
   if (bind(listenSocket, (struct sockaddr*) &serverAddress, sizeof(serverAddress)) < 0)
