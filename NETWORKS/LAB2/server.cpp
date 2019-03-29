@@ -39,7 +39,7 @@ int main(){
     /* ---------Get that server stuffs told other stuffs--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family
   serverAddress.sin_port = htons(inPort);  //declare Port number
-  serverAddress.sin_addr.s_addr = "132.194.186.55";//INADDR_ANY;  //Set this to the local IP
+  serverAddress.sin_addr.s_addr = INADDR_ANY;  //Set this to the local IP 132.194.186.55
 
     /* ---------Tie it up in a bow--------- */
   if (bind(listenSocket, (struct sockaddr*) &serverAddress, sizeof(serverAddress)) < 0)

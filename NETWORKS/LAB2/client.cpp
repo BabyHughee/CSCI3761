@@ -26,9 +26,11 @@ int main(){
     /* -------declare all the neccesary integers.------- */
   int listenSocket, msg_size;
   // socklen_t clientSize;
-  int inPort = 2414; //this is the port and also my student ID
+  int inPort = 2414;//2121; //this is the port and also my student ID
   char  buffer[256]; //this will hold the message recieved and sent.
   struct sockaddr_in serverAddress; //server
+  // struct sockaddr_in* serverAddress; //server
+  // struct sockaddr_in hints; //server
   struct hostent *server;
 
     /* ---------Manage socket jazz--------- */
@@ -37,7 +39,7 @@ int main(){
   if(listenSocket < 0) //Verify if succesful
     error("Error opening socket"); //Well shoot.
 
-  std::string ucdenver = "127.0.0.1";
+  std::string ucdenver = "132.194.186.166";
 
   server = gethostbyname(ucdenver.c_str());
 
