@@ -26,12 +26,12 @@ int main(){
     /* -------declare all the neccesary integers.------- */
   int listenSocket, msg_size;
   // socklen_t clientSize;
-  int inPort = 2414;//2121; //this is the port and also my student ID
+  int inPort = 2121;//2121; //this is the port and also my student ID
   char  buffer[256]; //this will hold the message recieved and sent.
-  struct sockaddr_in serverAddress; //server
-  // struct sockaddr_in* serverAddress; //server
-  // struct sockaddr_in hints; //server
-  struct hostent *server;
+  // struct sockaddr_in serverAddress; //server
+  struct addrinfo* serverAddress; //server
+  struct addrinfo hints; //server
+  int server;
 
     /* ---------Manage socket jazz--------- */
   listenSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -39,23 +39,27 @@ int main(){
   if(listenSocket < 0) //Verify if succesful
     error("Error opening socket"); //Well shoot.
 
+
+    /* ---------Get that stuffs told other stuffs--------- */
+  hints.ai_family = AF_INET;  //declare addr family
+   /*------------------------------------------------------*/
+
   std::string ucdenver = "132.194.186.166";
 
-  server = gethostbyname(ucdenver.c_str());
+  server = getaddrinfo("csegrid.ucdenver.pvt", "2121", &hints, &serverAddress);
 
-  if(server == NULL) //Verify if succesful
+  if(server < 0) //Verify if succesful
     error("Error finding host"); //Well shoot.
 
   bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
 
-    /* ---------Get that stuffs told other stuffs--------- */
-  serverAddress.sin_family = AF_INET;  //declare addr family
-  bcopy((char *)server->h_addr, (char *)&serverAddress.sin_addr.s_addr, server->h_length);
-  serverAddress.sin_port = htons(inPort);  //declare Port number
+
 
     /* ---------Tie it up in a bow--------- */
-  if (connect(listenSocket, (struct sockaddr*) &serverAddress, sizeof(serverAddress)) < 0)
-     error("Error connecting"); //Well shoot.
+  if (connect(listenSocket, serverAddress->ai_addr, serverAddress->ai_addrlen))
+     error("\nError connecting\n"); //Well shoot.
+     // error("\nWhat\nda\nfuck...\n"); //Well shoot.
+
 
     /* ---------Listen--------- */
   cout << "Please enter a message: ";
