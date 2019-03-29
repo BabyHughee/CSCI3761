@@ -5,7 +5,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string>
-
+#define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
 using std::cout;
 using std::cin;
@@ -34,7 +34,7 @@ int main(){
   if(listenSocket < 0) //Verify if succesful
     error("Error opening socket"); //Well shoot.
 
-  memset((char*) &serverAddress, 0, sizeof(serverAddress)); //clearBuffer
+  bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
 
     /* ---------Get that server stuffs told other stuffs--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family
@@ -54,7 +54,7 @@ int main(){
     error("Error accepting"); //Well shoot.
 
    /* ---------Get Message--------- */
-  memset(buffer,0,256);
+  bzero(buffer,256);
   msg_size = read(in_Connect, buffer, 255);
   if(msg_size < 0) //Verify if succesful
     error("Error reading"); //Well shoot.
