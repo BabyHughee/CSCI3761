@@ -1,27 +1,23 @@
 CC=g++
 LD=g++
 CC_FLAGS=-g -std=c++11
-OBJECTS= client.o # implementations.o
+CLIENT= client.o # implementations.o
 SERVER= server.o # implementation.o
-OB= SERVER
-BINARY=
+SOB= SERVER
+COB= CLIENT
 
-client: $(OBJECTS)
-	$(LD) -o client $(OBJECTS)
+all: $(CLIENT) $(SERVER)
+	$(LD) -o $(COB) $(CLIENT)
+	$(LD) -o $(SOB) $(SERVER)
+
+client: $(CLIENT)
+	$(LD) -o $(COB) $(CLIENT)
 
 server: $(SERVER)
-	$(LD) -o server $(SERVER)
+	$(LD) -o $(SOB) $(SERVER)
 
 clean:
-	rm -rf $(OBJECTS) $(SERVER) $(BINARY) html latex $(OB).zip client server server.o def docbook man rtf
+	rm -rf $(SERVER) $(CLIENT) $(COB) $(SOB)
 
 %.o: %.cpp
 	$(CC) -c $(CC_FLAGS) $< -o $@
-
-docs:
-	doxygen doxygen.cfg
-
-# zip:
-# 	zip -r $(OB).zip *.cpp *.h *.txt *.csv *.pdf README makefile
-# 	cp $(OB).zip ~/Desktop/
-# 	cp -f $(OB).zip ~/kaest/CSCI2421/completeZips
