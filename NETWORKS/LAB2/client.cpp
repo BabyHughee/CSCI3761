@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <string>
 #include <cstring>
-#include <netdb.h>
+#include <netdb.h> 
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
