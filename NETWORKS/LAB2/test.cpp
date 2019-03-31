@@ -29,11 +29,40 @@ int main(){
         directory.append(i->d_name);
         directory.append("\n");
     }
-    
+
     closedir(dir);
 
 
      cout << directory << endl;
 
     return 0;
+}
+
+void error(std::string msg){
+  cerr << (msg);
+  exit(1);
+}
+
+
+
+std::string getCatalog(){
+  char cwd[PATH_MAX];
+  getcwd(cwd, sizeof(cwd));
+  std::string directory;
+
+  DIR *dir;
+
+  if((dir = opendir(cwd)) == NULL){ cout << "CWD_NOT_FOUND";  }
+
+  struct dirent* i;
+
+  while((i = readdir(dir)) != NULL ){
+      directory.append(i->d_name);
+      directory.append("\n");
+  }
+
+  closedir(dir);
+
+
+   return directory;
 }

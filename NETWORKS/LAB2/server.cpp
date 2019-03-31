@@ -19,31 +19,39 @@ std::string getCatalog();
 void error(std::string msg);
 
 
-int main(int argc, char *argv[]) {
+int main() {
     /* -------declare all the neccesary integers.------- */
   int listenSocket, in_Connect, msg_size;
   socklen_t clientSize;
-  int inPort = 5984; //this is the port and also my student ID
+  int inPort = 2121; //this is the port
   char  buffer[256]; //this will hold the message recieved and sent.
-  struct sockaddr_in serverAddress; //server
-  struct sockaddr_in clientAddress; //client
+  struct sockaddr_in serverAddress; //server info
+  struct sockaddr_in clientAddress; //client info
 
-    /* ---------Manage socket jazz--------- */
-  listenSocket = socket(AF_INET, SOCK_STREAM, 0);
 
-  if(listenSocket < 0) //Verify if succesful
-    error("Error opening socket"); //Well shoot.
 
-  bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
+    /* ---------Open socket--------- */
+  if((listenSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    error("Error opening socket");
 
-    /* ---------Get that server stuffs told other stuffs--------- */
+    bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
+
+    /* ---------Load up details--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family
   serverAddress.sin_port = htons(inPort);  //declare Port number
   serverAddress.sin_addr.s_addr = INADDR_ANY;  //Set this to the local IP 132.194.186.55
 
-    /* ---------Tie it up in a bow--------- */
+    /* ---------Bind the server--------- */
   if (bind(listenSocket, (struct sockaddr*) &serverAddress, sizeof(serverAddress)) < 0)
-     error("Error binding"); //Well shoot.
+     error("Error binding");
+
+
+
+
+
+
+
+
 
     /* ---------Listen--------- */
   listen(listenSocket, 5);
@@ -55,18 +63,21 @@ int main(int argc, char *argv[]) {
 
    /* ---------Get Message--------- */
   bzero(buffer,256);
-  msg_size = read(in_Connect, buffer, 255);
-  if(msg_size < 0) //Verify if succesful
-    error("Error reading"); //Well shoot.
-  cout << "Client: " << buffer << endl;
+
+  if((msg_size = read(in_Connect, buffer, 255)) < 0) //receive message
+    error("Error reading");
+
+  cout << "Client: " << buffer << endl; //show recieved message
 
   /* ---------Return Message--------- */
  bzero(buffer,256);
-char returnMessage[256] = "Hello Client.";
-std::string catalogue = getCatalog();
- msg_size = write(in_Connect, catalogue.c_str(), 255);
- if(msg_size < 0) //Verify if succesful
-   error("Error writing"); //Well shoot.
+
+char returnMessage[256] = "Hello Client."; //prepare message
+
+ if((msg_size = write(in_Connect, returnMessage, 255)) < 0) //Send message
+   error("Error writing");
+
+   close(listenSocket);
 
     return 0;
 }

@@ -22,89 +22,57 @@ void error(std::string msg){
 }
 
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]){
     /* -------declare all the neccesary integers.------- */
   int listenSocket, msg_size;
-  // socklen_t clientSize;
-  int inPort = 5984;//2121; //this is the port and also my student ID
+  std::string inPort = "2121"; //this is the port
   char  buffer[256]; //this will hold the message recieved and sent.
-  // struct sockaddr_in serverAddress; //server
-  struct sockaddr_in serverAddress; //server
-  // struct addrinfo hints; //server
-  struct hostent* server;
-
-    /* ---------Manage socket jazz--------- */
-  listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-
-  if(listenSocket < 0) //Verify if succesful
-    error("Error opening socket"); //Well shoot.
+  struct addrinfo* serverAddress; //server info
+  struct addrinfo hints; //used to specify TCP
 
 
-   /*------------------------------------------------------*/
-
-   // if (argc != 2) {
-   //   cerr << "usage: client hostname\n";
-   //   exit (1);
-   //   }
-
-  // server = gethostbyname(argv[1]);
-
-  server = gethostbyname("csegrid.ucdenver.pvt");
-
-  if(server == NULL) //Verify if succesful
-    error("Error finding host"); //Well shoot.
-
-  bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
-
-  serverAddress.sin_family = AF_INET; /* interp’d by host */
-  serverAddress.sin_port = htons (inPort);
-  serverAddress.sin_addr = *((struct in_addr*)server->h_addr);
-
-    /* ---------Tie it up in a bow--------- */
-  if (connect(listenSocket,(struct sockaddr*) &serverAddress, sizeof(struct sockaddr)) == -1){
-     error("\nError connecting\n"); //Well shoot.
-     // error("\nWhat\nda\nfuck...\n"); //Well shoot.
-   }
 
 
-    /* ---------Listen--------- */
-  cout << "Please enter a message: ";
+
+    /* ---------Open socket--------- */
+  if((listenSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    error("Error opening socket");
+
+  hints.ai_family = AF_INET;  //specify TCP
+
+  /* ---------Get Server Info--------- */
+  if(getaddrinfo("127.0.0.1", inPort.c_str(), &hints, &serverAddress) < 0)
+    error("Error finding host");
+
+    /* ---------connect to server--------- */
+  if (connect(listenSocket, serverAddress->ai_addr, sizeof(struct sockaddr)) < 0)
+     error("\nError connecting\n");
+
+
+
+
+
+
+    /* ---------Send--------- */
   bzero(buffer, 256);
-  std::cin.getline(buffer, 255, '\n');
-  msg_size = write(listenSocket, buffer, 255);
-  if(msg_size < 0) //Verify if succesful
-    error("Error writing"); //Well shoot.
 
+  cout << "Please enter a message: ";
+  std::cin.getline(buffer, 255, '\n');
+
+
+  if((msg_size = write(listenSocket, buffer, 255)) < 0) //send message
+    error("Error writing");
+
+    /* ---------Recieve--------- */
   bzero(buffer,256);
-    msg_size = read(listenSocket, buffer, 255);
-  if(msg_size < 0) //Verify if succesful
-    error("Error reading"); //Well shoot.
+
+  if((msg_size = read(listenSocket, buffer, 255)) < 0) //read server's response
+    error("Error reading");
 
   cout << "Server: " << buffer << endl;
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -150,16 +118,16 @@ int main(int argc, char *argv[]) {
 // }
 //
 //
-// int main(){
+// int main(int argc, char *argv[]) {
 //     /* -------declare all the neccesary integers.------- */
 //   int listenSocket, msg_size;
 //   // socklen_t clientSize;
-//   int inPort = 2121;//2121; //this is the port and also my student ID
+//   int inPort = 5984;//2121; //this is the port and also my student ID
 //   char  buffer[256]; //this will hold the message recieved and sent.
 //   // struct sockaddr_in serverAddress; //server
-//   struct addrinfo* serverAddress; //server
-//   struct addrinfo hints; //server
-//   int server;
+//   struct sockaddr_in serverAddress; //server
+//   // struct addrinfo hints; //server
+//   struct hostent* server;
 //
 //     /* ---------Manage socket jazz--------- */
 //   listenSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -168,25 +136,31 @@ int main(int argc, char *argv[]) {
 //     error("Error opening socket"); //Well shoot.
 //
 //
-//     /* ---------Get that stuffs told other stuffs--------- */
-//   hints.ai_family = AF_INET;  //declare addr family
 //    /*------------------------------------------------------*/
 //
-//   std::string ucdenver = "132.194.186.166";
+//    // if (argc != 2) {
+//    //   cerr << "usage: client hostname\n";
+//    //   exit (1);
+//    //   }
 //
-//   server = getaddrinfo("csegrid.ucdenver.pvt", "2121", &hints, &serverAddress);
+//   // server = gethostbyname(argv[1]);
 //
-//   if(server < 0) //Verify if succesful
+//   server = gethostbyname("csegrid.ucdenver.pvt");
+//
+//   if(server == NULL) //Verify if succesful
 //     error("Error finding host"); //Well shoot.
 //
-//   // bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
+//   bzero((char*) &serverAddress, sizeof(serverAddress)); //clearBuffer
 //
-//
+//   serverAddress.sin_family = AF_INET; /* interp’d by host */
+//   serverAddress.sin_port = htons (inPort);
+//   serverAddress.sin_addr = *((struct in_addr*)server->h_addr);
 //
 //     /* ---------Tie it up in a bow--------- */
-//   if (connect(listenSocket, serverAddress->ai_addr, sizeof(struct sockaddr)))
+//   if (connect(listenSocket,(struct sockaddr*) &serverAddress, sizeof(struct sockaddr)) == -1){
 //      error("\nError connecting\n"); //Well shoot.
 //      // error("\nWhat\nda\nfuck...\n"); //Well shoot.
+//    }
 //
 //
 //     /* ---------Listen--------- */
@@ -206,3 +180,45 @@ int main(int argc, char *argv[]) {
 //
 //     return 0;
 // }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
