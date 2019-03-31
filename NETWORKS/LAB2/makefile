@@ -16,8 +16,11 @@ client: $(CLIENT)
 server: $(SERVER)
 	$(LD) -o $(SOB) $(SERVER)
 
+test:
+	g++ test.cpp -o TEST
+
 clean:
-	rm -rf $(SERVER) $(CLIENT) $(COB) $(SOB)
+	rm -rf $(SERVER) $(CLIENT) $(COB) $(SOB) TEST
 
 %.o: %.cpp
 	$(CC) -c $(CC_FLAGS) $< -o $@
