@@ -12,12 +12,15 @@ using std::endl;
 using std::cerr;
 
 std::string getCatalog();
+std::string getSpwd();
 void error(std::string);
 
 int main(){
     std::string directory = getCatalog();
 
     cout << directory << endl;
+
+    getSpwd();
 
     return 0;
 }
@@ -30,7 +33,7 @@ void error(std::string msg){
 
 /** Makes a list of every file in the working directory seperated by new lines
   \@ Param Takes nothing
-  \@ Return a string **/
+  \@ Return a string with results of ls **/
 std::string getCatalog(){
   char cwd[PATH_MAX];
   getcwd(cwd, sizeof(cwd)); //get the current working directory
@@ -54,4 +57,15 @@ std::string getCatalog(){
 
 
    return directory; //and return
+}
+
+
+/** Finds the current working directory and return it as a string
+  \@ Param Takes nothing
+  \@ Return a string with the current path**/
+std::string getSpwd(){
+  char cwd[PATH_MAX];
+  getcwd(cwd, sizeof(cwd)); //get the current working directory
+  std::string directory = cwd; //set directory to it
+  return directory; //and return
 }

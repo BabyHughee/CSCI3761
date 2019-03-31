@@ -41,7 +41,7 @@ int main(int argc, char* argv[]){
   hints.ai_family = AF_INET;  //specify TCP
 
   /* ---------Get Server Info--------- */
-  if(getaddrinfo("127.0.0.1", inPort.c_str(), &hints, &serverAddress) < 0)
+  if(getaddrinfo("csegrid.ucdenver.pvt", inPort.c_str(), &hints, &serverAddress) < 0)
     error("Error finding host");
 
     /* ---------connect to server--------- */

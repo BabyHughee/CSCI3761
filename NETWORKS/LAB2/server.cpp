@@ -15,7 +15,10 @@ using std::cin;
 using std::endl;
 using std::cerr;
 
+
+int serveClient(char);
 std::string getCatalog();
+std::string getSpwd();
 void error(std::string msg);
 
 
@@ -44,10 +47,6 @@ int main() {
     /* ---------Bind the server--------- */
   if (bind(listenSocket, (struct sockaddr*) &serverAddress, sizeof(serverAddress)) < 0)
      error("Error binding");
-
-
-
-
 
 
 
@@ -83,31 +82,57 @@ char returnMessage[256] = "Hello Client."; //prepare message
 }
 
 
-void error(std::string msg){
-  cerr << (msg);
-  exit(1);
+/** Take in the requests of each server and handle them as needed
+  \@ Param msg is the message sent to from the client
+  \@ Return 0 | -1 depending on success   */
+int serveClient(char msg){
+
+
+  return 0;
 }
 
 
 
+
+/** Makes a list of every file in the working directory seperated by new lines
+  \@ Param Takes nothing
+  \@ Return a string with results of ls */
 std::string getCatalog(){
   char cwd[PATH_MAX];
-  getcwd(cwd, sizeof(cwd));
+  getcwd(cwd, sizeof(cwd)); //get the current working directory
   std::string directory;
 
-  DIR *dir;
+  DIR *dir; //prepare to open a stream.
 
-  if((dir = opendir(cwd)) == NULL){ cout << "CWD_NOT_FOUND";  }
+  if((dir = opendir(cwd)) == NULL){
+      cout << "CWD_NOT_FOUND";
+      return "CWD_NOT_FOUND";
+    } //if it doesnt exist output error and return error.
 
   struct dirent* i;
 
-  while((i = readdir(dir)) != NULL ){
-      directory.append(i->d_name);
-      directory.append("\n");
+  while((i = readdir(dir)) != NULL ){ //otherwise
+      directory.append(i->d_name); //add the new item to the string
+      directory.append("\n"); //and add a new line
   }
 
-  closedir(dir);
+  closedir(dir); //close the stream
 
 
-   return directory;
+   return directory; //and return
+}
+
+/** Finds the current working directory and return it as a string
+  \@ Param Takes nothing
+  \@ Return a string with the current path*/
+std::string getSpwd(){
+  char cwd[PATH_MAX];
+  getcwd(cwd, sizeof(cwd)); //get the current working directory
+  std::string directory = cwd; //set directory to it
+  return directory; //and return
+}
+
+void error(std::string msg){
+  cerr << (msg);
+  exit(1);
 }
