@@ -22,7 +22,7 @@ void error(std::string msg){
 }
 
 
-int main(){
+int main(int argc, char *argv[]) {
     /* -------declare all the neccesary integers.------- */
   int listenSocket, msg_size;
   // socklen_t clientSize;
@@ -30,7 +30,7 @@ int main(){
   char  buffer[256]; //this will hold the message recieved and sent.
   // struct sockaddr_in serverAddress; //server
   struct sockaddr_in serverAddress; //server
-  struct addrinfo hints; //server
+  // struct addrinfo hints; //server
   struct hostent* server;
 
     /* ---------Manage socket jazz--------- */
@@ -40,13 +40,14 @@ int main(){
     error("Error opening socket"); //Well shoot.
 
 
-    /* ---------Get that stuffs told other stuffs--------- */
-  hints.ai_family = AF_INET;  //declare addr family
    /*------------------------------------------------------*/
 
-  std::string ucdenver = "132.194.186.166";
+   if (argc != 2) {
+     cerr << "usage: client hostname\n";
+     exit (1);
+     }
 
-  server = gethostbyname("csegrid.ucdenver.pvt");
+  server = gethostbyname(argv[1]);
 
   if(server == NULL) //Verify if succesful
     error("Error finding host"); //Well shoot.
@@ -59,7 +60,7 @@ int main(){
   bzero (&(serverAddress.sin_zero), 8);
 
     /* ---------Tie it up in a bow--------- */
-  if (connect(listenSocket,(struct sockaddr*) &serverAddress, sizeof(struct sockaddr))){
+  if (connect(listenSocket,(struct sockaddr*) &serverAddress, sizeof(struct sockaddr)) < 0){
      error("\nError connecting\n"); //Well shoot.
      // error("\nWhat\nda\nfuck...\n"); //Well shoot.
    }

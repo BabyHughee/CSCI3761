@@ -19,7 +19,7 @@ std::string getCatalog();
 void error(std::string msg);
 
 
-int main(){
+int main(int argc, char *argv[]) {
     /* -------declare all the neccesary integers.------- */
   int listenSocket, in_Connect, msg_size;
   socklen_t clientSize;
