@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include <string>
 #include <cstring>
-#include <netdb.h> 
+#include <netdb.h>
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     /* -------declare all the neccesary integers.------- */
   int listenSocket, msg_size;
   // socklen_t clientSize;
-  int inPort = 2121;//2121; //this is the port and also my student ID
+  int inPort = 5984;//2121; //this is the port and also my student ID
   char  buffer[256]; //this will hold the message recieved and sent.
   // struct sockaddr_in serverAddress; //server
   struct sockaddr_in serverAddress; //server
@@ -42,12 +42,14 @@ int main(int argc, char *argv[]) {
 
    /*------------------------------------------------------*/
 
-   if (argc != 2) {
-     cerr << "usage: client hostname\n";
-     exit (1);
-     }
+   // if (argc != 2) {
+   //   cerr << "usage: client hostname\n";
+   //   exit (1);
+   //   }
 
-  server = gethostbyname(argv[1]);
+  // server = gethostbyname(argv[1]);
+
+  server = gethostbyname("csegrid.ucdenver.pvt");
 
   if(server == NULL) //Verify if succesful
     error("Error finding host"); //Well shoot.
@@ -57,10 +59,9 @@ int main(int argc, char *argv[]) {
   serverAddress.sin_family = AF_INET; /* interp’d by host */
   serverAddress.sin_port = htons (inPort);
   serverAddress.sin_addr = *((struct in_addr*)server->h_addr);
-  bzero (&(serverAddress.sin_zero), 8);
 
     /* ---------Tie it up in a bow--------- */
-  if (connect(listenSocket,(struct sockaddr*) &serverAddress, sizeof(struct sockaddr)) < 0){
+  if (connect(listenSocket,(struct sockaddr*) &serverAddress, sizeof(struct sockaddr)) == -1){
      error("\nError connecting\n"); //Well shoot.
      // error("\nWhat\nda\nfuck...\n"); //Well shoot.
    }

@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
     /* -------declare all the neccesary integers.------- */
   int listenSocket, in_Connect, msg_size;
   socklen_t clientSize;
-  int inPort = 2121; //this is the port and also my student ID
+  int inPort = 5984; //this is the port and also my student ID
   char  buffer[256]; //this will hold the message recieved and sent.
   struct sockaddr_in serverAddress; //server
   struct sockaddr_in clientAddress; //client
