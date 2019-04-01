@@ -34,7 +34,7 @@ int main(int argc, char* argv[]){
   struct addrinfo hints; //used to specify TCP
 
   if (argc != 3){
-    cerr << "./client [server IP] [port]";
+    cerr << "./client [server IP] [port]" << endl;
     exit(1);
   }
 

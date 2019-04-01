@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 /*-*/ hostName = gethostname(temp, sizeof(temp));                          /*-*/
 /*-*/ thisHost = gethostbyname(temp);                                      /*-*/
 /*-*/ IPaddress = inet_ntoa(*((struct in_addr*)thisHost->h_addr_list[0])); /*-*/
-/*-*/            cout << "Local host IP: " << IPaddress << endl;           /*-*/
+/*-*/   cout << "Server is listening on: " << IPaddress << endl;           /*-*/
 /*-------------------(Thanks to GeeksforGeeks for this method)----------------*/
 /*-------------------Local address retrieved----------------------------------*/
 /*----------------------------------------------------------------------------*/
