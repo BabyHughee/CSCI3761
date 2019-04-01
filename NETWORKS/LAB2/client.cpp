@@ -38,6 +38,8 @@ int main(int argc, char* argv[]){
   if((listenSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
     error("Error opening socket");
 
+  bzero((char*) &hints, sizeof(hints)); //clearBuffer
+
   hints.ai_family = AF_INET;  //specify TCP
 
   /* ---------Get Server Info--------- */
