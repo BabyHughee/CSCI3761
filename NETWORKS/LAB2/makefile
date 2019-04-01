@@ -3,8 +3,8 @@ LD=g++
 CC_FLAGS=-g -std=c++11
 CLIENT= client.o # implementations.o
 SERVER= server.o # implementation.o
-SOB= SERVER
-COB= CLIENT
+SOB= server
+COB= client
 
 all: $(CLIENT) $(SERVER)
 	$(LD) -o $(COB) $(CLIENT)
