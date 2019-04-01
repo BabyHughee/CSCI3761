@@ -34,10 +34,10 @@ int main(int argc, char* argv[]) {
 
 
   if (argc != 2){
-    cerr << "\n./server [port]" << endl;
+    cerr << "./server [port]" << endl;
     exit(1);
   }
-  
+
 /*----------------------------------------------------------------------------*/
 /*-----------------------------Retrieve local address-------------------------*/
 /*-*/ char* IPaddress;                                                     /*-*/
