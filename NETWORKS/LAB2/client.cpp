@@ -7,6 +7,8 @@
 #include <string>
 #include <cstring>
 #include <netdb.h>
+#include <errno.h>
+#include <arpa/inet.h>
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
@@ -18,6 +20,7 @@ using std::cerr;
 
 void error(std::string msg){
   cerr << (msg);
+  cerr << "Errno: " << errno << endl;
   exit(1);
 }
 
@@ -30,8 +33,10 @@ int main(int argc, char* argv[]){
   struct addrinfo* serverAddress; //server info
   struct addrinfo hints; //used to specify TCP
 
-
-
+  if (argc != 3){
+    cerr << "./client [server IP] [port]";
+    exit(1);
+  }
 
 
     /* ---------Open socket--------- */
@@ -43,10 +48,12 @@ int main(int argc, char* argv[]){
   hints.ai_family = AF_INET;  //specify TCP
 
   /* ---------Get Server Info--------- */
-  if(getaddrinfo("csegrid.ucdenver.pvt", inPort.c_str(), &hints, &serverAddress) < 0)
+  if(getaddrinfo(argv[1], argv[2], &hints, &serverAddress) < 0)
     error("Error finding host");
 
     /* ---------connect to server--------- */
+  cerr << "Connecting to: " << inet_ntoa(((struct sockaddr_in*) serverAddress->ai_addr)->sin_addr) << endl;
+
   if (connect(listenSocket, serverAddress->ai_addr, sizeof(struct sockaddr)) < 0)
      error("\nError connecting\n");
 

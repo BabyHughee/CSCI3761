@@ -3,10 +3,12 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <netdb.h>
 #include <unistd.h>
 #include <string>
 #include <cstring>
 #include <dirent.h>
+#include <arpa/inet.h>
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
@@ -22,16 +24,34 @@ std::string getSpwd();
 void error(std::string msg);
 
 
-int main() {
+int main(int argc, char* argv[]) {
     /* -------declare all the neccesary integers.------- */
   int listenSocket, in_Connect, msg_size;
   socklen_t clientSize;
-  int inPort = 2121; //this is the port
   char  buffer[256]; //this will hold the message recieved and sent.
   struct sockaddr_in serverAddress; //server info
   struct sockaddr_in clientAddress; //client info
 
 
+/*----------------------------------------------------------------------------*/
+/*-----------------------------Retrieve local address-------------------------*/
+/*-*/ char* IPaddress;                                                     /*-*/
+/*-*/ int hostName;                                                        /*-*/
+/*-*/ struct hostent* thisHost;                                            /*-*/
+/*-*/ char temp[256];                                                      /*-*/
+/*-*/                                                                      /*-*/
+/*-*/ hostName = gethostname(temp, sizeof(temp));                          /*-*/
+/*-*/ thisHost = gethostbyname(temp);                                      /*-*/
+/*-*/ IPaddress = inet_ntoa(*((struct in_addr*)thisHost->h_addr_list[0])); /*-*/
+/*-*/            cout << "Local host IP: " << IPaddress << endl;           /*-*/
+/*-------------------(Thanks to GeeksforGeeks for this method)----------------*/
+/*-------------------Local address retrieved----------------------------------*/
+/*----------------------------------------------------------------------------*/
+
+if (argc != 2){
+  cerr << "\n./server [port]" << endl;
+  exit(1);
+}
 
     /* ---------Open socket--------- */
   if((listenSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -41,7 +61,7 @@ int main() {
 
     /* ---------Load up details--------- */
   serverAddress.sin_family = AF_INET;  //declare addr family
-  serverAddress.sin_port = htons(inPort);  //declare Port number
+  serverAddress.sin_port = htons(atoi(argv[1]));  //declare Port number
   serverAddress.sin_addr.s_addr = INADDR_ANY;  //Set this to the local IP 132.194.186.55
 
     /* ---------Bind the server--------- */
