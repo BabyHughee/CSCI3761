@@ -33,6 +33,11 @@ int main(int argc, char* argv[]) {
   struct sockaddr_in clientAddress; //client info
 
 
+  if (argc != 2){
+    cerr << "\n./server [port]" << endl;
+    exit(1);
+  }
+  
 /*----------------------------------------------------------------------------*/
 /*-----------------------------Retrieve local address-------------------------*/
 /*-*/ char* IPaddress;                                                     /*-*/
@@ -47,11 +52,6 @@ int main(int argc, char* argv[]) {
 /*-------------------(Thanks to GeeksforGeeks for this method)----------------*/
 /*-------------------Local address retrieved----------------------------------*/
 /*----------------------------------------------------------------------------*/
-
-if (argc != 2){
-  cerr << "\n./server [port]" << endl;
-  exit(1);
-}
 
     /* ---------Open socket--------- */
   if((listenSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
