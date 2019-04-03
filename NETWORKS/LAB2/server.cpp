@@ -106,10 +106,10 @@ std::string returnMessage = serveClient(buffer); //prepare message
   \@ Param msg is the message sent from the client
   \@ Return a string containing the response   */
 std::string serveClient(char* msg){
-  if(strncmp(msg,"ls",2)){
+  if(strncmp(msg,"ls",2) == 0){
     return getCatalog();
   }
-  if(strncmp(msg,"pwd",2)){
+  if(strncmp(msg,"pwd",3) == 0){
     return getSpwd();
   }
 
