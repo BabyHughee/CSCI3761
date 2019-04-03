@@ -18,7 +18,7 @@ using std::endl;
 using std::cerr;
 
 
-int serveClient(char);
+std::string serveClient(char*);
 std::string getCatalog();
 std::string getSpwd();
 void error(std::string msg);
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 /*-*/ hostName = gethostname(temp, sizeof(temp));                          /*-*/
 /*-*/ thisHost = gethostbyname(temp);                                      /*-*/
 /*-*/ IPaddress = inet_ntoa(*((struct in_addr*)thisHost->h_addr_list[0])); /*-*/
-/*-*/   cout << "Server is listening on: " << IPaddress << endl;           /*-*/
+/*-*/ cout << "Server is listening on: " << IPaddress << endl;             /*-*/
 /*-------------------(Thanks to GeeksforGeeks for this method)----------------*/
 /*-------------------Local address retrieved----------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -89,11 +89,11 @@ int main(int argc, char* argv[]) {
   cout << "Client: " << buffer << endl; //show recieved message
 
   /* ---------Return Message--------- */
- bzero(buffer,256);
+ // bzero(buffer,256);
 
-char returnMessage[256] = "Hello Client."; //prepare message
+std::string returnMessage = serveClient(buffer); //prepare message
 
- if((msg_size = write(in_Connect, returnMessage, 255)) < 0) //Send message
+ if((msg_size = write(in_Connect, returnMessage.c_str(), 255)) < 0) //Send message
    error("Error writing");
 
    close(listenSocket);
@@ -103,12 +103,17 @@ char returnMessage[256] = "Hello Client."; //prepare message
 
 
 /** Take in the requests of each server and handle them as needed
-  \@ Param msg is the message sent to from the client
-  \@ Return 0 | -1 depending on success   */
-int serveClient(char msg){
+  \@ Param msg is the message sent from the client
+  \@ Return a string containing the response   */
+std::string serveClient(char* msg){
+  if(strncmp(msg,"ls",2)){
+    return getCatalog();
+  }
+  if(strncmp(msg,"pwd",2)){
+    return getSpwd();
+  }
 
-
-  return 0;
+  return "fail";
 }
 
 
