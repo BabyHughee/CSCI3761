@@ -9,6 +9,10 @@
 #include <cstring>
 #include <dirent.h>
 #include <arpa/inet.h>
+#include <signal.h>
+#include <sys/wait.h>
+
+#define BACKLOG 3; //size of queue
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
@@ -22,7 +26,7 @@ std::string serveClient(char*);
 std::string getCatalog();
 std::string getSpwd();
 void error(std::string msg);
-
+void sigchld_handler(int s);
 
 int main(int argc, char* argv[]) {
     /* -------declare all the neccesary integers.------- */
@@ -31,6 +35,7 @@ int main(int argc, char* argv[]) {
   char  buffer[256]; //this will hold the message recieved and sent.
   struct sockaddr_in serverAddress; //server info
   struct sockaddr_in clientAddress; //client info
+  struct sigaction sa;
 
 
   if (argc != 2){
@@ -74,11 +79,33 @@ int main(int argc, char* argv[]) {
 
     /* ---------Listen--------- */
   listen(listenSocket, 5);
+  printf("server: listening for incomming connections \n");
 
-  clientSize = sizeof(clientAddress);
-  in_Connect = accept(listenSocket,(struct sockaddr*) &clientAddress,&clientSize);
-  if(in_Connect < 0) //Verify if succesful
-    error("Error accepting"); //Well shoot.
+   /*---------SIG handling---------*/
+  sa.sa_handler = sigchld_handler;
+  sigemptyset(&sa.sa_mask);
+  sa.sa_flags = SA_RESTART;
+
+  if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(1); }
+
+  while(true){
+    clientSize = sizeof(clientAddress);
+    in_Connect = accept(listenSocket,(struct sockaddr*) &clientAddress,&clientSize);
+    if(in_Connect < 0) //Verify if succesful
+      error("Error accepting"); //Well shoot.
+
+    printf("server: got connection from %s\n", \
+               inet_ntoa(clientAddress.sin_addr));
+
+    if(!fork()){
+      close(listenSocket);
+
+    }
+  }
+
+
 
    /* ---------Get Message--------- */
   bzero(buffer,256);
@@ -160,4 +187,9 @@ std::string getSpwd(){
 void error(std::string msg){
   cerr << (msg);
   exit(1);
+}
+
+void sigchld_handler(int s)
+{
+    while(waitpid(-1, NULL, WNOHANG) > 0);
 }
