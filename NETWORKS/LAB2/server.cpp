@@ -120,6 +120,7 @@ int main(int argc, char* argv[]) {
 
             printf("server: close connection from %s\n", \
                    inet_ntoa(clientAddress.sin_addr));
+            cout << getpid() << endl;
             close(in_Connect); // close the connection
             exit(0);
         }
