@@ -108,7 +108,7 @@ int main(int argc, char* argv[]) {
               error("Error reading");
 
 
-               cout << "Client: " << buffer << endl; //show recieved message
+               cout << "Client"<< getpid() << ": " << buffer << endl; //show recieved message
 
                /* ---------Return Message--------- */
               // bzero(buffer,256);

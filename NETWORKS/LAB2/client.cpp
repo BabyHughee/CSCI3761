@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
 
 
 
-
+while(true){
     /* ---------Send--------- */
   bzero(buffer, 256);
 
@@ -81,6 +81,6 @@ int main(int argc, char* argv[]){
   cout << "Server: " << buffer << endl;
 
   close(listenSocket);
-
+}
     return 0;
 }
