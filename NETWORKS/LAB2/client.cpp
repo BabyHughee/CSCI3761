@@ -24,10 +24,11 @@ void error(std::string msg){
   exit(1);
 }
 
+int communicateWithServer(char*, int);
 
 int main(int argc, char* argv[]){
     /* -------declare all the neccesary integers.------- */
-  int listenSocket, msg_size;
+  int listenSocket;
   std::string inPort = "2121"; //this is the port
   char  buffer[256]; //this will hold the message recieved and sent.
   struct addrinfo* serverAddress; //server info
@@ -58,27 +59,34 @@ int main(int argc, char* argv[]){
      error("\nError connecting\n");
 
 
+  while (communicateWithServer(buffer, listenSocket) != -1);
 
 
+  close(listenSocket);
+    return 0;
+}
 
-    /* ---------Send--------- */
-  bzero(buffer, 256);
+
+int communicateWithServer(char* buffer, int hearSock){
+  int msg_size;
 
   cout << "Please enter a message: ";
+  bzero(buffer, 256);
   std::cin.getline(buffer, 255, '\n');
 
+  if(strncmp(buffer, "exit", 4) == 0){
+    return -1;
+  }
 
-  if((msg_size = write(listenSocket, buffer, 255)) < 0) //send message
+  if((msg_size = write(hearSock, buffer, 255)) < 0) //send message
     error("Error writing");
 
-    /* ---------Recieve--------- */
   bzero(buffer,256);
 
-  if((msg_size = read(listenSocket, buffer, 255)) < 0) //read server's response
+  if((msg_size = read(hearSock, buffer, 255)) < 0) //read server's response
     error("Error reading");
 
   cout << "Server: " << buffer << endl;
 
-  close(listenSocket);
-    return 0;
+  return 0;
 }
