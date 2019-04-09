@@ -100,15 +100,30 @@ int main(int argc, char* argv[]) {
                inet_ntoa(clientAddress.sin_addr));
 
     if(!fork()){
-      close(listenSocket);
-      if (send(in_Connect, "Hello, world!\n", 14, 0) == -1) // sending data to client
-                perror("send");
+      close(listenSocket);//---------------
+              /* ---------Get Message--------- */
+             bzero(buffer,256);
+
+            if((msg_size = read(in_Connect, buffer, 255)) < 0) //receive message
+              error("Error reading");
+
+
+               cout << "Client: " << buffer << endl; //show recieved message
+
+               /* ---------Return Message--------- */
+              // bzero(buffer,256);
+
+             std::string returnMessage = serveClient(buffer); //prepare message
+
+              if((msg_size = write(in_Connect, returnMessage.c_str(), 255)) < 0) //Send message
+                error("Error writing");
+
             printf("server: close connection from %s\n", \
                    inet_ntoa(clientAddress.sin_addr));
             close(in_Connect); // close the connection
             exit(0);
         }
-        close(in_Connect);  // parent doesn't need this
+        close(in_Connect);  // parent doesn't need this/-----------
     }
 
     return 0;
