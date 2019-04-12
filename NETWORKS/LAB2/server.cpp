@@ -43,15 +43,16 @@ int main(int argc, char* argv[]) {
 /*-*/ char* IPaddress;                                                     /*-*/
 /*-*/ int hostName;                                                        /*-*/
 /*-*/ struct hostent* thisHost;                                            /*-*/
-/*-*/ char temp[256];                                                      /*-*/
+/*-*/ char hostGetTemp[256];                                               /*-*/
 /*-*/                                                                      /*-*/
-/*-*/ hostName = gethostname(temp, sizeof(temp));                          /*-*/
-/*-*/ thisHost = gethostbyname(temp);                                      /*-*/
+/*-*/ hostName = gethostname(hostGetTemp, sizeof(hostGetTemp));            /*-*/
+/*-*/ thisHost = gethostbyname(hostGetTemp);                               /*-*/
 /*-*/ IPaddress = inet_ntoa(*((struct in_addr*)thisHost->h_addr_list[0])); /*-*/
 /*-*/ cout << "Server is listening on: " << IPaddress << endl;             /*-*/
 /*-------------------(Thanks to GeeksforGeeks for this method)----------------*/
 /*-------------------Local address retrieved----------------------------------*/
 /*----------------------------------------------------------------------------*/
+
 
     /* ---------Open socket--------- */
   if((listenSocket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
@@ -76,9 +77,14 @@ int main(int argc, char* argv[]) {
   listen(listenSocket, 5);
 
   clientSize = sizeof(clientAddress);
+  
   in_Connect = accept(listenSocket,(struct sockaddr*) &clientAddress,&clientSize);
   if(in_Connect < 0) //Verify if succesful
     error("Error accepting"); //Well shoot.
+
+  bool m_exit = false;
+  std::string temp;
+while(!m_exit){
 
    /* ---------Get Message--------- */
   bzero(buffer,256);
@@ -88,13 +94,33 @@ int main(int argc, char* argv[]) {
 
   cout << "Client: " << buffer << endl; //show recieved message
 
-  /* ---------Return Message--------- */
- // bzero(buffer,256);
+///////////////////////////////
+  if(strncmp(buffer,"ls",2) == 0){
+    temp =  getCatalog();
+  }
+  else if(strncmp(buffer,"pwd",3) == 0){
+    temp = getSpwd();
+  }
+  else if(strncmp(buffer,"exit",4) == 0){
+    temp = "bye now";
+    m_exit = true;
+  }//////////////////////////////////////////////////////////////////////////////////////////////////////
+  else if(strncmp(buffer,"download",8) == 0){
+    temp = "download";
+  }//////////////////////////////////////////////////////////////////////////////////////////////////////
+  else if(strncmp(buffer,"upload",6) == 0){
+    temp = "upload";
+  }
+  else {temp = "invalid command";}
 
-std::string returnMessage = serveClient(buffer); //prepare message
 
- if((msg_size = write(in_Connect, returnMessage.c_str(), 255)) < 0) //Send message
-   error("Error writing");
+
+
+    /* ---------Return Message--------- */
+
+   if((msg_size = write(in_Connect, temp.c_str(), 255)) < 0) //Send message
+     error("Error writing");
+}
 
    close(listenSocket);
 

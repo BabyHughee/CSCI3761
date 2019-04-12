@@ -16,11 +16,39 @@ std::string getSpwd();
 void error(std::string);
 
 int main(){
-    std::string directory = getCatalog();
 
-    cout << directory << endl;
+//SERVER SIDE
+std::string filename = "README";
+FILE *fd = fopen(filename.c_str(), "rb");
+int fileSize;
 
-    getSpwd();
+fseek(fd, 0L, SEEK_END);
+fileSize = ftell(fd);
+rewind(fd);
+
+char buffer[fileSize];
+
+std::string sizeAccept = std::to_string(fileSize); //prepare message
+
+fread( buffer , fileSize, 1 , fd);
+
+
+
+//CLIENT SIDE
+std::string output = "testOut";
+
+FILE* fp = fopen(output.c_str(), "wb");
+
+fwrite(&buffer, 1, sizeof(buffer), fp);
+
+    fclose(fd);
+
+
+    // std::string directory = getCatalog();
+    //
+    // cout << directory << endl;
+    //
+    // getSpwd();
 
     return 0;
 }

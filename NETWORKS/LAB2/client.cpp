@@ -60,13 +60,24 @@ int main(int argc, char* argv[]){
 
 
 
-
-
+bool m_exit = false;
+while(!m_exit){
     /* ---------Send--------- */
   bzero(buffer, 256);
 
+  cin.clear();
   cout << "Please enter a message: ";
   std::cin.getline(buffer, 255, '\n');
+
+  if(strncmp(buffer,"download",8) == 0){
+
+  }
+  else if(strncmp(buffer,"upload",6) == 0){
+
+  }
+  else if(strncmp(buffer,"exit",4) == 0){
+    m_exit = true;
+  }
 
 
   if((msg_size = write(listenSocket, buffer, 255)) < 0) //send message
@@ -80,7 +91,10 @@ int main(int argc, char* argv[]){
 
   cout << "Server: " << buffer << endl;
 
+  }
+
   close(listenSocket);
+
 
     return 0;
 }
