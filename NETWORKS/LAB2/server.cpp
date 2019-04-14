@@ -124,7 +124,7 @@ while(!m_exit){
    cout << ">Client"<< getpid() << ": " << buffer << endl; //show client with pid
 
 ///////////////////////////////
-
+try{
   if(strncmp(buffer,"catalog",7) == 0){
     temp =  getCatalog();
   }
@@ -151,6 +151,23 @@ while(!m_exit){
         std::string filename = downloadcmd[1];
 
         FILE *fd = fopen(filename.c_str(), "rb"); //read that binary
+
+        //////////////////////////////////////check availability////////////////////////
+                          if(fd == NULL){
+                            char sendFailure[] = "No";
+
+                            if((msg_size = write(in_Connect, sendFailure, sizeof(sendFailure))) < 0) //not a success
+                              error("Error writing");
+
+                            throw("File_Not_Found");
+                          }else{
+
+                            char sendSuccess[] = "Yes";
+
+                            if((msg_size = write(in_Connect, sendSuccess, sizeof(sendSuccess))) < 0) //not a success
+                              error("Error writing");
+                          }
+        //////////////////////////////////////check availability////////////////////////
 
         int fileSize;
 
@@ -193,6 +210,7 @@ while(!m_exit){
 
     std::string output = uploadcmd[2];
 
+
     FILE* fp = fopen(output.c_str(), "wb"); //open file in write binary
 
     if((msg_size = read(in_Connect, buffer, 255)) < 0) //read server's response
@@ -214,7 +232,7 @@ while(!m_exit){
   else {temp = "**invalid command**";}
 
 
-
+}catch(const char* fileFailure){temp = fileFailure;}
 
     /* ---------Return Message--------- */
 

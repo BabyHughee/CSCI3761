@@ -92,9 +92,11 @@ while(!m_exit){
   if((msg_size = write(listenSocket, buffer, 255)) < 0)
     error("Error writing");
 
-
+try{
   if(strncmp(buffer,"download",8) == 0){
-                  ////////////////////////////////FILE RECIEVER////////////////////////////////////
+////////////////////////////////FILE RECIEVER////////////////////////////////////
+
+
                   std::string downloadcmd[3];
 
                   std::stringstream split(buffer); //parse command into components
@@ -104,6 +106,17 @@ while(!m_exit){
                   bzero(buffer, 256);
 
                   std::string output = downloadcmd[2];
+
+                  //////////////////////////////////////read availability////////////////////////
+                  char avalabilityChecker[20];
+                          if((msg_size = read(listenSocket, avalabilityChecker, sizeof(avalabilityChecker) + 1)) < 0) //read status
+                            error("Error reading");
+                                    if(strncmp(avalabilityChecker, "No",2) == 0){
+                                      throw("File_Not_Found");
+                                    }else{
+                                      /*DO NOTHING*/
+                                    }
+                  //////////////////////////////////////read availability////////////////////////
 
                   FILE* fp = fopen(output.c_str(), "wb"); //open file in write binary
 
@@ -121,7 +134,7 @@ while(!m_exit){
                   fwrite(fileBuffer, 1, fileSize, fp); //save file
 
                   fclose(fp); //close
-                  ////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"upload",6) == 0){
                   ////////////////////////////////FILE SENDER////////////////////////////////////
@@ -165,6 +178,7 @@ while(!m_exit){
     m_exit = true;
   }
 
+}catch(const char* failMessage){ }
     /* ---------Recieve--------- */
   bzero(buffer,256);
 

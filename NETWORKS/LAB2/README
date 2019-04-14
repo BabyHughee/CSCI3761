@@ -71,9 +71,9 @@ cleaned up.
 -> Tested on csegrid.ucdenver.pvt
 
 
-**********************
-** WORKS COMPLETELY **
-**********************
+*************************************************
+** WORKS PARTIALLY: NO ERROR CHECKING ON UPLOAD**
+*************************************************
 
 
 XXX: Future implementations will perhaps give the option to navigate through the
