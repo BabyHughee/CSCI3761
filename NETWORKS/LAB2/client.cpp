@@ -5,14 +5,16 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string>
-#include <cstring>
+// #include <cstring>
 #include <netdb.h>
 #include <errno.h>
 #include <arpa/inet.h>
-#include <dirent.h>
-#include <array>
-#include <memory>
-#include <cstdio>
+// #include <dirent.h>
+// #include <array>
+// #include <memory>
+// #include <cstdio>
+#include <sstream>
+#include <exception>
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
@@ -22,13 +24,8 @@ using std::endl;
 using std::cerr;
 
 std::string executeCommand(std::string);
+void error(std::string msg);
 std::string getPwd();
-
-void error(std::string msg){
-  cerr << (msg);
-  cerr << "Errno: " << errno << endl;
-  exit(1);
-}
 
 
 int main(int argc, char* argv[]){
@@ -63,7 +60,7 @@ int main(int argc, char* argv[]){
   if (connect(listenSocket, serverAddress->ai_addr, sizeof(struct sockaddr)) < 0)
      error("\nError connecting\n");
 
-
+  cout << "Welcome to the FTP server\n for list of commands type \'help\'" << endl;
 
 
 bool m_exit = false;
@@ -75,20 +72,32 @@ while(!m_exit){
   cout << ">";
   std::cin.getline(buffer, 255, '\n');
 
+
   if(strncmp(buffer,"pwd",3) == 0){
     cout << getPwd() << endl;
   }else if(strncmp(buffer,"ls",2) == 0){
     cout << executeCommand(buffer) << endl;
+  }else if(strncmp(buffer,"help",4) == 0){
+    cout << "ls [options]  - Display all the file names under current directory\n"
+         << "pwd           - Display current directory information\n"
+         << "catalog       - Display the all file names under current server directory\n"
+         << "spwd          - Display current server directory information\n"
+         << "download source-filename dest-filename  \n"
+         << "              - Download file from server\n"
+         << "upload source-filename dest-filename  \n"
+         <<  "              - Upload file from server\n";
   }else{ //I am so sorry for this spaghetti code
+
 
   if((msg_size = write(listenSocket, buffer, 255)) < 0) //send message
     error("Error writing");
 
+// try{
   if(strncmp(buffer,"download",8) == 0){
                   ////////////////////////////////FILE RECIEVER////////////////////////////////////
                   bzero(buffer, 256);
 
-                  std::string output = "testOut";
+                  std::string output = "cDolphin";
 
                   FILE* fp = fopen(output.c_str(), "wb");
 
@@ -111,8 +120,15 @@ while(!m_exit){
   else if(strncmp(buffer,"upload",6) == 0){
                   ////////////////////////////////FILE SENDER////////////////////////////////////
                   bzero(buffer,256);
-                  std::string filename = "client.cpp";
+
+                  std::string filename = "README";
+
                   FILE *fd = fopen(filename.c_str(), "rb");
+
+                  if(fd == NULL){
+                    throw("*No Such File*");
+                  }
+
                   int fileSize;
 
                   fseek(fd, 0L, SEEK_END);
@@ -140,13 +156,16 @@ while(!m_exit){
     m_exit = true;
   }
 
+// }catch(std::string fileFail)
+
     /* ---------Recieve--------- */
   bzero(buffer,256);
 
-  if((msg_size = read(listenSocket, buffer, 255)) < 0) //read server's response
+  if((msg_size = read(listenSocket, buffer, 256)) < 0) //read server's response
     error("Error reading");
 
   cout << ">" << "Server: " << buffer << endl;
+
     }
   }
 
@@ -188,4 +207,12 @@ std::string getPwd(){
   getcwd(cwd, sizeof(cwd)); //get the current working directory
   std::string directory = cwd; //set directory to it
   return directory; //and return
+}
+
+
+
+void error(std::string msg){
+  cerr << (msg);
+  cerr << "Errno: " << errno << endl;
+  exit(1);
 }

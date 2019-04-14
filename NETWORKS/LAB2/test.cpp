@@ -5,6 +5,7 @@
 #include <string>
 #include <cstring>
 #include <dirent.h>
+#include <sstream>
 
 using std::cout;
 using std::cin;
@@ -17,31 +18,47 @@ void error(std::string);
 
 int main(){
 
+  char toSplit[] = "download someFile.cpp otherFile.o";
+
+
+  std::string result[3];
+
+  std::stringstream split(toSplit);
+  for(int i = 0; i < 3; i++){
+    split >> result[i];
+  }
+
+
+
+      for (int i = 0; i < 3; i++){
+        cout << i << ": " << result[i] << endl;
+      }
+
 //SERVER SIDE
-std::string filename = "README";
-FILE *fd = fopen(filename.c_str(), "rb");
-int fileSize;
-
-fseek(fd, 0L, SEEK_END);
-fileSize = ftell(fd);
-rewind(fd);
-
-char buffer[fileSize];
-
-std::string sizeAccept = std::to_string(fileSize); //prepare message
-
-fread( buffer , fileSize, 1 , fd);
-
-
-
-//CLIENT SIDE
-std::string output = "testOut";
-
-FILE* fp = fopen(output.c_str(), "wb");
-
-fwrite(&buffer, 1, sizeof(buffer), fp);
-
-    fclose(fd);
+// std::string filename = "README";
+// FILE *fd = fopen(filename.c_str(), "rb");
+// int fileSize;
+//
+// fseek(fd, 0L, SEEK_END);
+// fileSize = ftell(fd);
+// rewind(fd);
+//
+// char buffer[fileSize];
+//
+// std::string sizeAccept = std::to_string(fileSize); //prepare message
+//
+// fread( buffer , fileSize, 1 , fd);
+//
+//
+//
+// //CLIENT SIDE
+// std::string output = "testOut";
+//
+// FILE* fp = fopen(output.c_str(), "wb");
+//
+// fwrite(&buffer, 1, sizeof(buffer), fp);
+//
+//     fclose(fd);
 
 
     // std::string directory = getCatalog();

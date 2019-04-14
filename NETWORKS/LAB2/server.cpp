@@ -5,12 +5,15 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <unistd.h>
+#include <string.h>
 #include <string>
 #include <cstring>
 #include <dirent.h>
 #include <arpa/inet.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sstream>
+#include <exception>
 
 #define BACKLOG 3; //size of queue
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
@@ -121,11 +124,9 @@ while(!m_exit){
    cout << "-->Client"<< getpid() << ": " << buffer << endl; //show recieved message
 
 ///////////////////////////////
+
   if(strncmp(buffer,"catalog",7) == 0){
     temp =  getCatalog();
-  }
-  else if(strncmp(buffer,"help",4) == 0){
-    temp = "help";
   }
   else if(strncmp(buffer,"spwd",4) == 0){
     temp = getPwd();
@@ -135,11 +136,17 @@ while(!m_exit){
     m_exit = true;
   }
   else if(strncmp(buffer,"download",8) == 0){
-    temp = "download";
+    temp = "downloaded";
         ////////////////////////////////FILE SENDER////////////////////////////////////
         bzero(buffer,256);
-        std::string filename = "client.cpp";
+
+        std::string filename = "README";
+
         FILE *fd = fopen(filename.c_str(), "rb");
+        if(fd == NULL){
+          throw("*No Such File*");
+        }
+
         int fileSize;
 
         fseek(fd, 0L, SEEK_END);
@@ -160,15 +167,16 @@ while(!m_exit){
        if((msg_size = write(in_Connect, fileBuffer, fileSize)) < 0) //Send message
          error("Error writing");
 
+
           fclose(fd);
         ///////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"upload",6) == 0){
-    temp = "upload";
+    temp = "uploaded";
     ////////////////////////////////FILE RECIEVER////////////////////////////////////
     bzero(buffer, 256);
 
-    std::string output = "testOut";
+    std::string output = "sDolphin";
 
     FILE* fp = fopen(output.c_str(), "wb");
 
@@ -195,7 +203,7 @@ while(!m_exit){
 
     /* ---------Return Message--------- */
 
-   if((msg_size = write(in_Connect, temp.c_str(), 255)) < 0) //Send message
+   if((msg_size = write(in_Connect, temp.c_str(), temp.size())) < 0) //Send message
      error("Error writing");
 }
             printf("Server: close connection from %s\n", \
@@ -255,7 +263,7 @@ std::string getPwd(){
 }
 
 void error(std::string msg){
-  cerr << (msg);
+  cerr << (msg) << endl;
   exit(1);
 }
 
