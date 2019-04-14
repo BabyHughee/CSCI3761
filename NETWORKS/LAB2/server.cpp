@@ -112,7 +112,7 @@ while(true){ //threading loo[]
 
 
   bool m_exit = false; //exit variable
-  std::string temp; //handler variable
+  std::string temp = ""; //handler variable
 while(!m_exit){
 
    /* ---------Get Message--------- */

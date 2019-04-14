@@ -136,6 +136,8 @@ try{
                   fwrite(fileBuffer, 1, fileSize, fp); //save file
 
                   fclose(fp); //close
+
+                  bzero(buffer,256);
 ////////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"upload",6) == 0){
@@ -175,6 +177,8 @@ try{
 
                     fclose(fd); // close file
                   ///////////////////////////////////////////////////////////////////////////////
+
+                  bzero(buffer,256);
   }
   else if(strncmp(buffer,"bye",3) == 0){ //set exit
     m_exit = true;
