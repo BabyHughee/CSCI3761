@@ -90,6 +90,7 @@ int main(int argc, char* argv[]) {
          perror("sigaction");
          exit(1); }
 
+while(true){
   clientSize = sizeof(clientAddress);
 
   in_Connect = accept(listenSocket,(struct sockaddr*) &clientAddress,&clientSize);
@@ -183,6 +184,8 @@ while(!m_exit){
 
    if((msg_size = write(in_Connect, temp.c_str(), 255)) < 0) //Send message
      error("Error writing");
+}
+close(listenSocket);
 }
 
    close(listenSocket);
