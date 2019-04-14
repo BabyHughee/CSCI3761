@@ -21,9 +21,9 @@ using std::endl;
 using std::cerr;
 
 
-std::string serveClient(char*);
+
 std::string getCatalog();
-std::string getSpwd();
+std::string getPwd();
 void error(std::string msg);
 void sigchld_handler(int s);
 
@@ -53,7 +53,10 @@ int main(int argc, char* argv[]) {
 /*-*/ hostName = gethostname(hostGetTemp, sizeof(hostGetTemp));            /*-*/
 /*-*/ thisHost = gethostbyname(hostGetTemp);                               /*-*/
 /*-*/ IPaddress = inet_ntoa(*((struct in_addr*)thisHost->h_addr_list[0])); /*-*/
-/*-*/ cout << "Server is listening on: " << IPaddress << endl;             /*-*/
+/*-*/ cout << "||||||||||||||||||||||||||||||||||||||||||" << endl;        /*-*/
+/*-*/ cout << "||||||NOW RUNNING FTP SERVER||||||||||||||" << endl;        /*-*/
+/*-*/ cout << "||||||||||||||||||||||||||||||||||||||||||" << endl;        /*-*/
+/*-*/ cout << ">Server is listening on: " << IPaddress << endl;            /*-*/
 /*-------------------(Thanks to GeeksforGeeks for this method)----------------*/
 /*-------------------Local address retrieved----------------------------------*/
 /*----------------------------------------------------------------------------*/
@@ -80,7 +83,7 @@ int main(int argc, char* argv[]) {
 
      /* ---------Listen--------- */
    listen(listenSocket, 5);
-   printf("server: listening for incomming connections \n");
+   printf(">Server: listening for incomming connections \n");
 
     /*---------SIG handling---------*/
    sa.sa_handler = sigchld_handler;
@@ -98,7 +101,7 @@ while(true){
   if(in_Connect < 0) //Verify if succesful
     error("Error accepting"); //Well shoot.
 
-    printf("server: got connection from %s\n", \
+    printf(">Server: got connection from %s\n", \
                  inet_ntoa(clientAddress.sin_addr));
 
  if(!fork()){
@@ -115,17 +118,20 @@ while(!m_exit){
   if((msg_size = read(in_Connect, buffer, 255)) < 0) //receive message
     error("Error reading");
 
-   cout << "Client"<< getpid() << ": " << buffer << endl; //show recieved message
+   cout << "-->Client"<< getpid() << ": " << buffer << endl; //show recieved message
 
 ///////////////////////////////
-  if(strncmp(buffer,"ls",2) == 0){
+  if(strncmp(buffer,"catalog",7) == 0){
     temp =  getCatalog();
   }
-  else if(strncmp(buffer,"pwd",3) == 0){
-    temp = getSpwd();
+  else if(strncmp(buffer,"help",4) == 0){
+    temp = "help";
   }
-  else if(strncmp(buffer,"exit",4) == 0){
-    temp = "bye now";
+  else if(strncmp(buffer,"spwd",4) == 0){
+    temp = getPwd();
+  }
+  else if(strncmp(buffer,"bye",3) == 0){
+    temp = "File copy server is down!";
     m_exit = true;
   }
   else if(strncmp(buffer,"download",8) == 0){
@@ -182,7 +188,7 @@ while(!m_exit){
     fclose(fp);
     ////////////////////////////////////////////////////////////////////////////////
   }
-  else {temp = "invalid command";}
+  else {temp = "**invalid command**";}
 
 
 
@@ -192,7 +198,7 @@ while(!m_exit){
    if((msg_size = write(in_Connect, temp.c_str(), 255)) < 0) //Send message
      error("Error writing");
 }
-            printf("server: close connection from %s\n", \
+            printf("Server: close connection from %s\n", \
                    inet_ntoa(clientAddress.sin_addr));
             cout << getpid() << endl;
             close(in_Connect); // close the connection
@@ -205,21 +211,6 @@ close(in_Connect);
    close(listenSocket);
 
     return 0;
-}
-
-
-/** Take in the requests of each server and handle them as needed
-  \@ Param msg is the message sent from the client
-  \@ Return a string containing the response   */
-std::string serveClient(char* msg){
-  if(strncmp(msg,"ls",2) == 0){
-    return getCatalog();
-  }
-  if(strncmp(msg,"pwd",3) == 0){
-    return getSpwd();
-  }
-
-  return "fail";
 }
 
 
@@ -246,7 +237,7 @@ std::string getCatalog(){
       directory.append(i->d_name); //add the new item to the string
       directory.append("\n"); //and add a new line
   }
-
+  directory.pop_back(); //Remove last new line
   closedir(dir); //close the stream
 
 
@@ -256,7 +247,7 @@ std::string getCatalog(){
 /** Finds the current working directory and return it as a string
   \@ Param Takes nothing
   \@ Return a string with the current path*/
-std::string getSpwd(){
+std::string getPwd(){
   char cwd[PATH_MAX];
   getcwd(cwd, sizeof(cwd)); //get the current working directory
   std::string directory = cwd; //set directory to it

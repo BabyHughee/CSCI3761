@@ -9,6 +9,10 @@
 #include <netdb.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <dirent.h>
+#include <array>
+#include <memory>
+#include <cstdio>
 
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
@@ -17,6 +21,8 @@ using std::cin;
 using std::endl;
 using std::cerr;
 
+std::string executeCommand(std::string);
+std::string getPwd();
 
 void error(std::string msg){
   cerr << (msg);
@@ -28,7 +34,7 @@ void error(std::string msg){
 int main(int argc, char* argv[]){
     /* -------declare all the neccesary integers.------- */
   int listenSocket, msg_size;
-  std::string inPort = "2121"; //this is the port
+  // std::string inPort = "2121"; //this is the port
   char  buffer[256]; //this will hold the message recieved and sent.
   struct addrinfo* serverAddress; //server info
   struct addrinfo hints; //used to specify TCP
@@ -66,8 +72,14 @@ while(!m_exit){
   bzero(buffer, 256);
 
   // cin.clear();
-  cout << "Please enter a message: ";
+  cout << ">";
   std::cin.getline(buffer, 255, '\n');
+
+  if(strncmp(buffer,"pwd",3) == 0){
+    cout << getPwd() << endl;
+  }else if(strncmp(buffer,"ls",2) == 0){
+    cout << executeCommand(buffer) << endl;
+  }else{ //I am so sorry for this spaghetti code
 
   if((msg_size = write(listenSocket, buffer, 255)) < 0) //send message
     error("Error writing");
@@ -83,7 +95,7 @@ while(!m_exit){
                   if((msg_size = read(listenSocket, buffer, 255)) < 0) //read server's response
                     error("Error reading");
 
-                  cout << atoi(buffer) << endl;
+                  // cout << atoi(buffer) << endl;
                   int fileSize = atoi(buffer);
                   char fileBuffer[fileSize];
 
@@ -111,7 +123,7 @@ while(!m_exit){
 
                   std::string sizeAccept = std::to_string(fileSize); //prepare message
 
-                  cout << fileSize << endl;
+                  // cout << fileSize << endl;
 
                   if((msg_size = write(listenSocket, sizeAccept.c_str(), 255) < 0)) //Send message
                     error("Error writing");
@@ -134,12 +146,46 @@ while(!m_exit){
   if((msg_size = read(listenSocket, buffer, 255)) < 0) //read server's response
     error("Error reading");
 
-  cout << "Server: " << buffer << endl;
-
+  cout << ">" << "Server: " << buffer << endl;
+    }
   }
 
   close(listenSocket);
 
 
     return 0;
+}
+
+
+/** Executes ls command with options and returns results
+  \@ Param command command to execute
+  \@ Return a string with results of ls */
+std::string executeCommand(std::string command){
+  char result[256];
+  /*create custom deleting pointer to the pipe from command that is outputting
+                                                           to the commandline*/
+  std::unique_ptr<FILE, decltype(&pclose)> pipe(popen(command.c_str(), "r"), pclose);
+
+  //get the results of the command from the child
+  while (fgets(result, 128, pipe.get()) != nullptr) {
+        printf("%s", result); //put results into the return string
+    }
+
+    //remove last '\n' from result
+  for(int i = 0; i < sizeof(result); i++){
+    if(result[i] == '\0') //if we reach terminating character
+        {result[i-1] = '\0';} //the previous character (final '\n') now is '\0'
+  }
+
+   return result; //and return
+}
+
+/** Finds the current working directory and return it as a string
+  \@ Param Takes nothing
+  \@ Return a string with the current path*/
+std::string getPwd(){
+  char cwd[PATH_MAX];
+  getcwd(cwd, sizeof(cwd)); //get the current working directory
+  std::string directory = cwd; //set directory to it
+  return directory; //and return
 }
