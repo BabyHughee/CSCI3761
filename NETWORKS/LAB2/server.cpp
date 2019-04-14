@@ -112,7 +112,7 @@ while(true){ //threading loo[]
 
 
   bool m_exit = false; //exit variable
-  std::string temp = ""; //handler variable
+  std::string temp; //handler variable
 while(!m_exit){
 
    /* ---------Get Message--------- */
@@ -192,7 +192,6 @@ try{
 
         fclose(fd); //close the file
         ///////////////////////////////////////////////////////////////////////////////
-      temp = "downloaded";
   }
   else if(strncmp(buffer,"upload",6) == 0){
     temp = "uploaded";
@@ -235,11 +234,9 @@ try{
 
 }catch(const char* fileFailure){temp = fileFailure;}
 
-    bzero(buffer, 256);
-
     /* ---------Return Message--------- */
 
-   if((msg_size = write(in_Connect, temp.c_str(), 8)) < 0) //Send message
+   if((msg_size = write(in_Connect, temp.c_str(), temp.size()) + 1) < 0) //Send message
      error("Error writing");
 }
             printf("Server: close connection from %s\n", \
