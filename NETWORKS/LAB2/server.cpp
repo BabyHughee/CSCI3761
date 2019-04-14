@@ -143,9 +143,6 @@ while(!m_exit){
         std::string filename = "README";
 
         FILE *fd = fopen(filename.c_str(), "rb");
-        if(fd == NULL){
-          throw("*No Such File*");
-        }
 
         int fileSize;
 
@@ -168,7 +165,7 @@ while(!m_exit){
          error("Error writing");
 
 
-          fclose(fd);
+        fclose(fd);
         ///////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"upload",6) == 0){

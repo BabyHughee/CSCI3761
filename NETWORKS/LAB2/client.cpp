@@ -125,10 +125,6 @@ while(!m_exit){
 
                   FILE *fd = fopen(filename.c_str(), "rb");
 
-                  if(fd == NULL){
-                    throw("*No Such File*");
-                  }
-
                   int fileSize;
 
                   fseek(fd, 0L, SEEK_END);
