@@ -5,14 +5,9 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <string>
-// #include <cstring>
 #include <netdb.h>
 #include <errno.h>
 #include <arpa/inet.h>
-// #include <dirent.h>
-// #include <array>
-// #include <memory>
-// #include <cstdio>
 #include <sstream>
 #include <exception>
 
@@ -63,21 +58,24 @@ int main(int argc, char* argv[]){
   cout << "Welcome to the FTP server\n for list of commands type \'help\'" << endl;
 
 
-bool m_exit = false;
+bool m_exit = false; //exit variable
 while(!m_exit){
     /* ---------Send--------- */
   bzero(buffer, 256);
 
   // cin.clear();
   cout << ">";
-  std::cin.getline(buffer, 255, '\n');
+  std::cin.getline(buffer, 255, '\n'); //get the command from commandline
 
 
-  if(strncmp(buffer,"pwd",3) == 0){
+  if(strncmp(buffer,"pwd",3) == 0){ //client working directory
     cout << getPwd() << endl;
-  }else if(strncmp(buffer,"ls",2) == 0){
+
+  }else if(strncmp(buffer,"ls",2) == 0){ //client directory contents
     cout << executeCommand(buffer) << endl;
-  }else if(strncmp(buffer,"help",4) == 0){
+
+  }else if(strncmp(buffer,"help",4) == 0){ //command list
+
     cout << "ls [options]  - Display all the file names under current directory\n"
          << "pwd           - Display current directory information\n"
          << "catalog       - Display the all file names under current server directory\n"
@@ -89,15 +87,16 @@ while(!m_exit){
   }else{ //I am so sorry for this spaghetti code
 
 
-  if((msg_size = write(listenSocket, buffer, 255)) < 0) //send message
+  //if it was none of the above the server is involved
+  if((msg_size = write(listenSocket, buffer, 255)) < 0)
     error("Error writing");
 
-// try{
+
   if(strncmp(buffer,"download",8) == 0){
                   ////////////////////////////////FILE RECIEVER////////////////////////////////////
                   std::string downloadcmd[3];
 
-                  std::stringstream split(buffer);
+                  std::stringstream split(buffer); //parse command into components
                   for(int i = 0; i < 3; i++){
                     split >> downloadcmd[i];
                   }
@@ -105,29 +104,29 @@ while(!m_exit){
 
                   std::string output = downloadcmd[2];
 
-                  FILE* fp = fopen(output.c_str(), "wb");
+                  FILE* fp = fopen(output.c_str(), "wb"); //open file in write binary
 
-                  if((msg_size = read(listenSocket, buffer, 255)) < 0) //read server's response
+                  if((msg_size = read(listenSocket, buffer, 255)) < 0) //read size
                     error("Error reading");
 
                   // cout << atoi(buffer) << endl;
                   int fileSize = atoi(buffer);
-                  char fileBuffer[fileSize];
+                  char fileBuffer[fileSize]; //save size
 
 
-                  if((msg_size = read(listenSocket, fileBuffer, fileSize + 1)) < 0) //read server's response
+                  if((msg_size = read(listenSocket, fileBuffer, fileSize + 1)) < 0) //read file
                     error("Error reading");
 
-                  fwrite(fileBuffer, 1, fileSize, fp);
+                  fwrite(fileBuffer, 1, fileSize, fp); //save file
 
-                  fclose(fp);
+                  fclose(fp); //close
                   ////////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"upload",6) == 0){
                   ////////////////////////////////FILE SENDER////////////////////////////////////
                   std::string uploadcmd[3];
 
-                  std::stringstream split(buffer);
+                  std::stringstream split(buffer); //split command into components
                   for(int i = 0; i < 3; i++){
                     split >> uploadcmd[i];
                   }
@@ -136,49 +135,47 @@ while(!m_exit){
 
                   std::string filename = uploadcmd[1];
 
-                  FILE *fd = fopen(filename.c_str(), "rb");
+                  FILE *fd = fopen(filename.c_str(), "rb"); //open in read binary
 
                   int fileSize;
 
-                  fseek(fd, 0L, SEEK_END);
+                  fseek(fd, 0L, SEEK_END); //get file size
                   fileSize = ftell(fd);
                   rewind(fd);
 
-                  char fileBuffer[fileSize];
+                  char fileBuffer[fileSize]; //declare the buffer at proper file size
 
-                  std::string sizeAccept = std::to_string(fileSize); //prepare message
+                  std::string sizeAccept = std::to_string(fileSize); //prepare size for sending
 
                   // cout << fileSize << endl;
 
-                  if((msg_size = write(listenSocket, sizeAccept.c_str(), 255) < 0)) //Send message
+                  if((msg_size = write(listenSocket, sizeAccept.c_str(), 255) < 0)) //Send size
                     error("Error writing");
 
-                  fread( fileBuffer , fileSize, 1 , fd);
+                  fread( fileBuffer , fileSize, 1 , fd); //read in the file
 
-                 if((msg_size = write(listenSocket, fileBuffer, fileSize)) < 0) //Send message
+                 if((msg_size = write(listenSocket, fileBuffer, fileSize)) < 0) //Send file
                    error("Error writing");
 
-                    fclose(fd);
+                    fclose(fd); // close file
                   ///////////////////////////////////////////////////////////////////////////////
   }
-  else if(strncmp(buffer,"exit",4) == 0){
+  else if(strncmp(buffer,"exit",4) == 0){ //set exit
     m_exit = true;
   }
-
-// }catch(std::string fileFail)
 
     /* ---------Recieve--------- */
   bzero(buffer,256);
 
-  if((msg_size = read(listenSocket, buffer, 256)) < 0) //read server's response
+  if((msg_size = read(listenSocket, buffer, 256)) < 0) //read handler from server
     error("Error reading");
 
-  cout << ">" << "Server: " << buffer << endl;
+  cout << ">" << "Server: " << buffer << endl; //output results
 
     }
   }
 
-  close(listenSocket);
+  close(listenSocket); //close up shop
 
 
     return 0;
@@ -220,7 +217,7 @@ std::string getPwd(){
 
 
 
-void error(std::string msg){
+void error(std::string msg){ //error handler
   cerr << (msg);
   cerr << "Errno: " << errno << endl;
   exit(1);

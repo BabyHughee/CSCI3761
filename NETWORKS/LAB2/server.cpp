@@ -97,22 +97,22 @@ int main(int argc, char* argv[]) {
          perror("sigaction");
          exit(1); }
 
-while(true){
-  clientSize = sizeof(clientAddress);
+while(true){ //threading loo[]
+  clientSize = sizeof(clientAddress); //get client size
 
   in_Connect = accept(listenSocket,(struct sockaddr*) &clientAddress,&clientSize);
   if(in_Connect < 0) //Verify if succesful
     error("Error accepting"); //Well shoot.
 
     printf(">Server: got connection from %s\n", \
-                 inet_ntoa(clientAddress.sin_addr));
+                 inet_ntoa(clientAddress.sin_addr)); //formatting
 
- if(!fork()){
+ if(!fork()){ //get the fork happening
        close(listenSocket);//---------------
 
 
-  bool m_exit = false;
-  std::string temp;
+  bool m_exit = false; //exit variable
+  std::string temp; //handler variable
 while(!m_exit){
 
    /* ---------Get Message--------- */
@@ -121,7 +121,7 @@ while(!m_exit){
   if((msg_size = read(in_Connect, buffer, 255)) < 0) //receive message
     error("Error reading");
 
-   cout << "-->Client"<< getpid() << ": " << buffer << endl; //show recieved message
+   cout << "-->Client"<< getpid() << ": " << buffer << endl; //show client with pid
 
 ///////////////////////////////
 
@@ -141,7 +141,7 @@ while(!m_exit){
 
         std::string downloadcmd[3];
 
-        std::stringstream split(buffer);
+        std::stringstream split(buffer); //parse command into sections
         for(int i = 0; i < 3; i++){
           split >> downloadcmd[i];
           }
@@ -150,30 +150,30 @@ while(!m_exit){
 
         std::string filename = downloadcmd[1];
 
-        FILE *fd = fopen(filename.c_str(), "rb");
+        FILE *fd = fopen(filename.c_str(), "rb"); //read that binary
 
         int fileSize;
 
-        fseek(fd, 0L, SEEK_END);
-        fileSize = ftell(fd);
-        rewind(fd);
+        fseek(fd, 0L, SEEK_END); //find
+        fileSize = ftell(fd); //the
+        rewind(fd); //filesize
 
-        char fileBuffer[fileSize];
+        char fileBuffer[fileSize]; //initalize buffer to appropriate size
 
-        std::string sizeAccept = std::to_string(fileSize); //prepare message
+        std::string sizeAccept = std::to_string(fileSize); //prepare size for sending
 
-        cout << fileSize << endl;
+        // cout << fileSize << endl;
 
-        if((msg_size = write(in_Connect, sizeAccept.c_str(), 255) < 0)) //Send message
+        if((msg_size = write(in_Connect, sizeAccept.c_str(), 255) < 0)) //Send size
           error("Error writing");
 
-        fread( fileBuffer , fileSize, 1 , fd);
+        fread( fileBuffer , fileSize, 1 , fd); //read in  the file
 
-       if((msg_size = write(in_Connect, fileBuffer, fileSize)) < 0) //Send message
+       if((msg_size = write(in_Connect, fileBuffer, fileSize)) < 0) //Send the file
          error("Error writing");
 
 
-        fclose(fd);
+        fclose(fd); //close the file
         ///////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"upload",6) == 0){
@@ -182,33 +182,33 @@ while(!m_exit){
 
     std::string uploadcmd[3];
 
-    std::stringstream split(buffer);
+    std::stringstream split(buffer); //parse command into sections
     for(int i = 0; i < 3; i++){
       split >> uploadcmd[i];
     }
-      split >> uploadcmd[2];
+      split >> uploadcmd[2]; //catch any stragglers after a period
 
 
     bzero(buffer, 256);
 
     std::string output = uploadcmd[2];
 
-    FILE* fp = fopen(output.c_str(), "wb");
+    FILE* fp = fopen(output.c_str(), "wb"); //open file in write binary
 
     if((msg_size = read(in_Connect, buffer, 255)) < 0) //read server's response
       error("Error reading");
 
-    cout << atoi(buffer) << endl;
+    // cout << atoi(buffer) << endl;
     int fileSize = atoi(buffer);
-    char fileBuffer[fileSize];
+    char fileBuffer[fileSize]; //file buffer is prepared
 
 
-    if((msg_size = read(in_Connect, fileBuffer, fileSize + 1)) < 0) //read server's response
+    if((msg_size = read(in_Connect, fileBuffer, fileSize + 1)) < 0) //read clients file
       error("Error reading");
 
-    fwrite(fileBuffer, 1, fileSize, fp);
+    fwrite(fileBuffer, 1, fileSize, fp); //write out the clients file
 
-    fclose(fp);
+    fclose(fp); //close the file
     ////////////////////////////////////////////////////////////////////////////////
   }
   else {temp = "**invalid command**";}
@@ -222,16 +222,16 @@ while(!m_exit){
      error("Error writing");
 }
             printf("Server: close connection from %s\n", \
-                   inet_ntoa(clientAddress.sin_addr));
+                   inet_ntoa(clientAddress.sin_addr)); //Client disconnect message
             cout << getpid() << endl;
             close(in_Connect); // close the connection
             exit(0);
 }
 
-close(in_Connect);
+close(in_Connect); //close socket
 }
 
-   close(listenSocket);
+   close(listenSocket); //close socket
 
     return 0;
 }
@@ -277,12 +277,12 @@ std::string getPwd(){
   return directory; //and return
 }
 
-void error(std::string msg){
+void error(std::string msg){ //error handler
   cerr << (msg) << endl;
   exit(1);
 }
 
-void sigchld_handler(int s)
+void sigchld_handler(int s) //sig handler
 {
     while(waitpid(-1, NULL, WNOHANG) > 0);
 }
