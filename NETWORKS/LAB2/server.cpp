@@ -192,6 +192,7 @@ try{
 
         fclose(fd); //close the file
         ///////////////////////////////////////////////////////////////////////////////
+      temp = "downloaded";
   }
   else if(strncmp(buffer,"upload",6) == 0){
     temp = "uploaded";
