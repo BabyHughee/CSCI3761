@@ -77,10 +77,11 @@ int main(int argc, char* argv[]) {
   listen(listenSocket, 5);
 
   clientSize = sizeof(clientAddress);
-  
+
   in_Connect = accept(listenSocket,(struct sockaddr*) &clientAddress,&clientSize);
   if(in_Connect < 0) //Verify if succesful
     error("Error accepting"); //Well shoot.
+
 
   bool m_exit = false;
   std::string temp;
@@ -104,12 +105,60 @@ while(!m_exit){
   else if(strncmp(buffer,"exit",4) == 0){
     temp = "bye now";
     m_exit = true;
-  }//////////////////////////////////////////////////////////////////////////////////////////////////////
+  }
   else if(strncmp(buffer,"download",8) == 0){
     temp = "download";
-  }//////////////////////////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////FILE SENDER////////////////////////////////////
+        bzero(buffer,256);
+        std::string filename = "client.cpp";
+        FILE *fd = fopen(filename.c_str(), "rb");
+        int fileSize;
+
+        fseek(fd, 0L, SEEK_END);
+        fileSize = ftell(fd);
+        rewind(fd);
+
+        char fileBuffer[fileSize];
+
+        std::string sizeAccept = std::to_string(fileSize); //prepare message
+
+        cout << fileSize << endl;
+
+        if((msg_size = write(in_Connect, sizeAccept.c_str(), 255) < 0)) //Send message
+          error("Error writing");
+
+        fread( fileBuffer , fileSize, 1 , fd);
+
+       if((msg_size = write(in_Connect, fileBuffer, fileSize)) < 0) //Send message
+         error("Error writing");
+
+          fclose(fd);
+        ///////////////////////////////////////////////////////////////////////////////
+  }
   else if(strncmp(buffer,"upload",6) == 0){
     temp = "upload";
+    ////////////////////////////////FILE RECIEVER////////////////////////////////////
+    bzero(buffer, 256);
+
+    std::string output = "testOut";
+
+    FILE* fp = fopen(output.c_str(), "wb");
+
+    if((msg_size = read(in_Connect, buffer, 255)) < 0) //read server's response
+      error("Error reading");
+
+    cout << atoi(buffer) << endl;
+    int fileSize = atoi(buffer);
+    char fileBuffer[fileSize];
+
+
+    if((msg_size = read(in_Connect, fileBuffer, fileSize + 1)) < 0) //read server's response
+      error("Error reading");
+
+    fwrite(fileBuffer, 1, fileSize, fp);
+
+    fclose(fp);
+    ////////////////////////////////////////////////////////////////////////////////
   }
   else {temp = "invalid command";}
 

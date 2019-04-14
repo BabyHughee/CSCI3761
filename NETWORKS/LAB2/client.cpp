@@ -65,23 +65,68 @@ while(!m_exit){
     /* ---------Send--------- */
   bzero(buffer, 256);
 
-  cin.clear();
+  // cin.clear();
   cout << "Please enter a message: ";
   std::cin.getline(buffer, 255, '\n');
 
-  if(strncmp(buffer,"download",8) == 0){
+  if((msg_size = write(listenSocket, buffer, 255)) < 0) //send message
+    error("Error writing");
 
+  if(strncmp(buffer,"download",8) == 0){
+                  ////////////////////////////////FILE RECIEVER////////////////////////////////////
+                  bzero(buffer, 256);
+
+                  std::string output = "testOut";
+
+                  FILE* fp = fopen(output.c_str(), "wb");
+
+                  if((msg_size = read(listenSocket, buffer, 255)) < 0) //read server's response
+                    error("Error reading");
+
+                  cout << atoi(buffer) << endl;
+                  int fileSize = atoi(buffer);
+                  char fileBuffer[fileSize];
+
+
+                  if((msg_size = read(listenSocket, fileBuffer, fileSize + 1)) < 0) //read server's response
+                    error("Error reading");
+
+                  fwrite(fileBuffer, 1, fileSize, fp);
+
+                  fclose(fp);
+                  ////////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"upload",6) == 0){
+                  ////////////////////////////////FILE SENDER////////////////////////////////////
+                  bzero(buffer,256);
+                  std::string filename = "client.cpp";
+                  FILE *fd = fopen(filename.c_str(), "rb");
+                  int fileSize;
 
+                  fseek(fd, 0L, SEEK_END);
+                  fileSize = ftell(fd);
+                  rewind(fd);
+
+                  char fileBuffer[fileSize];
+
+                  std::string sizeAccept = std::to_string(fileSize); //prepare message
+
+                  cout << fileSize << endl;
+
+                  if((msg_size = write(listenSocket, sizeAccept.c_str(), 255) < 0)) //Send message
+                    error("Error writing");
+
+                  fread( fileBuffer , fileSize, 1 , fd);
+
+                 if((msg_size = write(listenSocket, fileBuffer, fileSize)) < 0) //Send message
+                   error("Error writing");
+
+                    fclose(fd);
+                  ///////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"exit",4) == 0){
     m_exit = true;
   }
-
-
-  if((msg_size = write(listenSocket, buffer, 255)) < 0) //send message
-    error("Error writing");
 
     /* ---------Recieve--------- */
   bzero(buffer,256);

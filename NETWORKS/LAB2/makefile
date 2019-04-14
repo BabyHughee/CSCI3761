@@ -20,7 +20,7 @@ test:
 	g++ test.cpp -o TEST
 
 clean:
-	rm -rf $(SERVER) $(CLIENT) $(COB) $(SOB) TEST
+	rm -rf $(SERVER) $(CLIENT) $(COB) $(SOB) TEST testOut
 
 %.o: %.cpp
 	$(CC) -c $(CC_FLAGS) $< -o $@
