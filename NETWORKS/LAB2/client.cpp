@@ -101,7 +101,6 @@ while(!m_exit){
                   for(int i = 0; i < 3; i++){
                     split >> downloadcmd[i];
                   }
-
                   bzero(buffer, 256);
 
                   std::string output = downloadcmd[2];
@@ -126,14 +125,14 @@ while(!m_exit){
   }
   else if(strncmp(buffer,"upload",6) == 0){
                   ////////////////////////////////FILE SENDER////////////////////////////////////
-                  bzero(buffer,256);
-
                   std::string uploadcmd[3];
 
                   std::stringstream split(buffer);
                   for(int i = 0; i < 3; i++){
                     split >> uploadcmd[i];
                   }
+
+                  bzero(buffer,256);
 
                   std::string filename = uploadcmd[1];
 

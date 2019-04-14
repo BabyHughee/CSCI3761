@@ -146,8 +146,6 @@ while(!m_exit){
           split >> downloadcmd[i];
           }
 
-        split >> downloadcmd[2];
-
         bzero(buffer,256);
 
         std::string filename = downloadcmd[1];
@@ -188,6 +186,8 @@ while(!m_exit){
     for(int i = 0; i < 3; i++){
       split >> uploadcmd[i];
     }
+      split >> uploadcmd[2];
+
 
     bzero(buffer, 256);
 
