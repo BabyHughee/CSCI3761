@@ -25,6 +25,7 @@ std::string serveClient(char*);
 std::string getCatalog();
 std::string getSpwd();
 void error(std::string msg);
+void sigchld_handler(int s);
 
 
 int main(int argc, char* argv[]) {
@@ -97,6 +98,12 @@ while(true){
   if(in_Connect < 0) //Verify if succesful
     error("Error accepting"); //Well shoot.
 
+    printf("server: got connection from %s\n", \
+                 inet_ntoa(clientAddress.sin_addr));
+
+ if(!fork()){
+       close(listenSocket);//---------------
+
 
   bool m_exit = false;
   std::string temp;
@@ -108,7 +115,7 @@ while(!m_exit){
   if((msg_size = read(in_Connect, buffer, 255)) < 0) //receive message
     error("Error reading");
 
-  cout << "Client: " << buffer << endl; //show recieved message
+   cout << "Client"<< getpid() << ": " << buffer << endl; //show recieved message
 
 ///////////////////////////////
   if(strncmp(buffer,"ls",2) == 0){
@@ -185,7 +192,14 @@ while(!m_exit){
    if((msg_size = write(in_Connect, temp.c_str(), 255)) < 0) //Send message
      error("Error writing");
 }
-close(listenSocket);
+            printf("server: close connection from %s\n", \
+                   inet_ntoa(clientAddress.sin_addr));
+            cout << getpid() << endl;
+            close(in_Connect); // close the connection
+            exit(0);
+}
+
+close(in_Connect);
 }
 
    close(listenSocket);
