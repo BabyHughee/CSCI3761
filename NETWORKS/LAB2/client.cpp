@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <memory>
 #include <string>
 #include <netdb.h>
 #include <errno.h>
