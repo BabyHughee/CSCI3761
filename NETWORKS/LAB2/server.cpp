@@ -267,3 +267,8 @@ void error(std::string msg){
   cerr << (msg);
   exit(1);
 }
+
+void sigchld_handler(int s)
+{
+    while(waitpid(-1, NULL, WNOHANG) > 0);
+}
