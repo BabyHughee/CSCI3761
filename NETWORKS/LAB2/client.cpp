@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include <string.h>
+#include <cstring>
 #include <netdb.h>
 #include <errno.h>
 #include <arpa/inet.h>
