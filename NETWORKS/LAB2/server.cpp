@@ -34,6 +34,7 @@ int main(int argc, char* argv[]) {
   char  buffer[256]; //this will hold the message recieved and sent.
   struct sockaddr_in serverAddress; //server info
   struct sockaddr_in clientAddress; //client info
+  struct sigaction sa;
 
 
   if (argc != 2){
