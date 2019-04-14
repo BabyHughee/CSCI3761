@@ -155,6 +155,7 @@ try{
         //////////////////////////////////////check availability////////////////////////
                           if(fd == NULL){
                             char sendFailure[] = "No";
+                            fclose(fd); //close the file
 
                             if((msg_size = write(in_Connect, sendFailure, sizeof(sendFailure))) < 0) //not a success
                               error("Error writing");
