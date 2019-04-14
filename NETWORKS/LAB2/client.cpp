@@ -7,7 +7,6 @@
 #include <memory>
 #include <string>
 #include <string.h>
-#include <cstring>
 #include <netdb.h>
 #include <errno.h>
 #include <arpa/inet.h>
@@ -227,7 +226,7 @@ std::string executeCommand(std::string command){
   \@ Param Takes nothing
   \@ Return a string with the current path*/
 std::string getPwd(){
-  char cwd[PATH_MAX];
+  char cwd[4096];
   getcwd(cwd, sizeof(cwd)); //get the current working directory
   std::string directory = cwd; //set directory to it
   return directory; //and return
