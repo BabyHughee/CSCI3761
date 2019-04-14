@@ -7,17 +7,54 @@ CSCI 3761
 Lab 2
 
 ******************************************************
-** TO COMPILE ----- 'make all'	                    **
-** TO RUN --------- './kaest_networksLAB2' #binary  **
+** TO COMPILE ALL----- 'make all'	                  **
+******************************************************
+** TO COMPILE server----- 'make server'	            **
+******************************************************
+** TO COMPILE client----- 'make client'	            **
+******************************************************
+******************************************************
+** TO RUN server--- ./server [port]                 **
+**        ->server will output it's IP on launch    **
+******************************************************
+** TO RUN client- './client [server IP] [port]'     **
 ******************************************************
 
 DESCRIPTION:
+SFTS (Simple File Transfer Services)
+In this programming assignment, you are to build a simple file copy service that
+consists of a client and server. The server and client program should run on
+separate machines.
 
 
 
 ************Structure***********
+This program is self-contained in the respective server and client files. There
+are no header files or external things compiling. It is pure spaghetti code.
 
+Running the server will provide some IP for the client to connect to by opening
+proper channels at the port specify and will also handle forking the process for
+each client and also handling the removal of zombies.
 
+Running the client will drop you on a commandline with the option to type 'help'
+for a list of commands.
+
+The commands are as follows:
+
+ls [options]  - Display all the file names under current directory
+pwd           - Display current directory information
+catalog       - Display the all file names under current server directory
+spwd          - Display current server directory information
+download source-filename dest-filename
+              - Download file from server
+upload source-filename dest-filename
+              - Upload file from server
+
+Each command is fully implemented.
+
+Program transfers files and shows directory details until user on client types
+'bye' at which point the client is disconnecting and the thread it was on is
+cleaned up.
 
 
 
@@ -29,6 +66,8 @@ DESCRIPTION:
 	-using gcc/g++ 7.2.0 processor
 	-Linted using both Clang and gcc 7.4.2
 
+-> Debugged using lldb
+
 -> Tested on csegrid.ucdenver.pvt
 
 
@@ -37,7 +76,8 @@ DESCRIPTION:
 **********************
 
 
-XXX: Future implementations will. . .
+XXX: Future implementations will perhaps give the option to navigate through the
+servers directories.
 
 
 
@@ -45,7 +85,7 @@ XXX: Future implementations will. . .
 ************Copyright***********
 
 
-   Copyright {2018} {Trystan Kaes}
+   Copyright {2019} {Trystan Kaes}
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

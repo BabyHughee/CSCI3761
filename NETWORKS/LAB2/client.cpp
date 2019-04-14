@@ -83,7 +83,8 @@ while(!m_exit){
          << "download source-filename dest-filename  \n"
          << "              - Download file from server\n"
          << "upload source-filename dest-filename  \n"
-         <<  "              - Upload file from server\n";
+         <<  "              - Upload file from server\n"
+         <<  "bye           - Disconnect from server\n";
   }else{ //I am so sorry for this spaghetti code
 
 
@@ -160,7 +161,7 @@ while(!m_exit){
                     fclose(fd); // close file
                   ///////////////////////////////////////////////////////////////////////////////
   }
-  else if(strncmp(buffer,"exit",4) == 0){ //set exit
+  else if(strncmp(buffer,"bye",3) == 0){ //set exit
     m_exit = true;
   }
 

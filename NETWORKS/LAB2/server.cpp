@@ -121,7 +121,7 @@ while(!m_exit){
   if((msg_size = read(in_Connect, buffer, 255)) < 0) //receive message
     error("Error reading");
 
-   cout << "-->Client"<< getpid() << ": " << buffer << endl; //show client with pid
+   cout << ">Client"<< getpid() << ": " << buffer << endl; //show client with pid
 
 ///////////////////////////////
 
@@ -223,7 +223,7 @@ while(!m_exit){
 }
             printf("Server: close connection from %s\n", \
                    inet_ntoa(clientAddress.sin_addr)); //Client disconnect message
-            cout << getpid() << endl;
+            cout << "------------------------------>Client"<<getpid() << endl;
             close(in_Connect); // close the connection
             exit(0);
 }
