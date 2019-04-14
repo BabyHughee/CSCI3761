@@ -95,9 +95,16 @@ while(!m_exit){
 // try{
   if(strncmp(buffer,"download",8) == 0){
                   ////////////////////////////////FILE RECIEVER////////////////////////////////////
+                  std::string downloadcmd[3];
+
+                  std::stringstream split(buffer);
+                  for(int i = 0; i < 3; i++){
+                    split >> downloadcmd[i];
+                  }
+
                   bzero(buffer, 256);
 
-                  std::string output = "cDolphin";
+                  std::string output = downloadcmd[2];
 
                   FILE* fp = fopen(output.c_str(), "wb");
 
@@ -121,7 +128,14 @@ while(!m_exit){
                   ////////////////////////////////FILE SENDER////////////////////////////////////
                   bzero(buffer,256);
 
-                  std::string filename = "README";
+                  std::string uploadcmd[3];
+
+                  std::stringstream split(buffer);
+                  for(int i = 0; i < 3; i++){
+                    split >> uploadcmd[i];
+                  }
+
+                  std::string filename = uploadcmd[1];
 
                   FILE *fd = fopen(filename.c_str(), "rb");
 
