@@ -239,7 +239,7 @@ try{
 
     /* ---------Return Message--------- */
 
-   if((msg_size = write(in_Connect, temp.c_str(), temp.size())) < 0) //Send message
+   if((msg_size = write(in_Connect, temp.c_str(), 8)) < 0) //Send message
      error("Error writing");
 }
             printf("Server: close connection from %s\n", \
