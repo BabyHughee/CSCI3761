@@ -9,7 +9,10 @@
 #include <cstring>
 #include <dirent.h>
 #include <arpa/inet.h>
+#include <signal.h>
+#include <sys/wait.h>
 
+#define BACKLOG 3; //size of queue
 #define bzero(b,len) (memset((b), '\0', (len)), (void) 0); //maybe this works
 
 using std::cout;
