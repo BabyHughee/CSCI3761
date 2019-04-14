@@ -235,6 +235,8 @@ try{
 
 }catch(const char* fileFailure){temp = fileFailure;}
 
+    bzero(buffer, 256);
+
     /* ---------Return Message--------- */
 
    if((msg_size = write(in_Connect, temp.c_str(), temp.size())) < 0) //Send message
