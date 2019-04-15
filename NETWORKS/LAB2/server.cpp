@@ -195,7 +195,7 @@ try{
             error("Error writing");
 
             totalSize += msg_size;
-        }while((totalSize < fileSize) && !(msg_size <= 0));
+        }while((totalSize <= fileSize) && !(msg_size <= 0));
 
         fclose(fd); //close the file
         ///////////////////////////////////////////////////////////////////////////////
