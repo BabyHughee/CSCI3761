@@ -94,7 +94,7 @@ while(!m_exit){
   if((msg_size = write(listenSocket, buffer, 255)) < 0)
     error("Error writing");
 
-try{
+// try{
   if(strncmp(buffer,"download",8) == 0){
 ////////////////////////////////FILE RECIEVER////////////////////////////////////
 
@@ -109,16 +109,16 @@ try{
 
                   std::string output = downloadcmd[2];
 
-                  //////////////////////////////////////read availability////////////////////////
-                  char avalabilityChecker[20];
-                          if((msg_size = read(listenSocket, avalabilityChecker, sizeof(avalabilityChecker) + 1)) < 0) //read status
-                            error("Error reading");
-                                    if(strncmp(avalabilityChecker, "No",2) == 0){
-                                      throw("File_Not_Found");
-                                    }else{
-                                      /*DO NOTHING*/
-                                    }
-                  //////////////////////////////////////read availability////////////////////////
+                  // //////////////////////////////////////read availability////////////////////////
+                  // char avalabilityChecker[20];
+                  //         if((msg_size = read(listenSocket, avalabilityChecker, sizeof(avalabilityChecker) + 1)) < 0) //read status
+                  //           error("Error reading");
+                  //                   if(strncmp(avalabilityChecker, "No",2) == 0){
+                  //                     throw("File_Not_Found");
+                  //                   }else{
+                  //                     /*DO NOTHING*/
+                  //                   }
+                  // //////////////////////////////////////read availability////////////////////////
 
                   FILE* fp = fopen(output.c_str(), "wb"); //open file in write binary
 
@@ -180,7 +180,7 @@ try{
     m_exit = true;
   }
 
-}catch(const char* failMessage){ }
+// }catch(const char* failMessage){ }
     /* ---------Recieve--------- */
   bzero(buffer,256);
 
