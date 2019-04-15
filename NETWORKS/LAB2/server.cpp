@@ -86,7 +86,7 @@ int main(int argc, char* argv[]) {
 
      /* ---------Listen--------- */
    listen(listenSocket, 5);
-   printf(">Server: listening for incomming connections \n");
+   printf(">Server: listening for incoming connections \n");
 
     /*---------SIG handling---------*/
    sa.sa_handler = sigchld_handler;
