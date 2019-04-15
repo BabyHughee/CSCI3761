@@ -152,7 +152,7 @@ try{
   }
   else if(strncmp(buffer,"upload",6) == 0){
     ////////////////////////////////FILE SENDER////////////////////////////////////
-    sleep(1); //wait for server to catch up
+    sleep(2); //wait for server to catch up
     std::string downloadcmd[3];
 
     std::stringstream split(buffer); //parse command into sections
