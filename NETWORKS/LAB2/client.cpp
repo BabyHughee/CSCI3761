@@ -125,16 +125,18 @@ try{
                   if((msg_size = read(listenSocket, buffer, 255)) < 0) //read size
                     error("Error reading");
 
+
                   // cout << atoi(buffer) << endl;
                   int fileSize = atoi(buffer);
-                  char fileBuffer[fileSize]; //save size
-
+                  // char fileBuffer[fileSize]; //save size
+                  void*fileBuffer = (char*)malloc(fileSize+1);
 
                   if((msg_size = read(listenSocket, fileBuffer, fileSize + 1)) < 0) //read file
                     error("Error reading");
 
                   fwrite(fileBuffer, 1, fileSize, fp); //save file
 
+                  free(fileBuffer);
                   fclose(fp); //close
 ////////////////////////////////////////////////////////////////////////////////
   }
@@ -159,7 +161,8 @@ try{
                   fileSize = ftell(fd);
                   rewind(fd);
 
-                  char fileBuffer[fileSize]; //declare the buffer at proper file size
+                  // char fileBuffer[fileSize]; //declare the buffer at proper file size
+                  void*fileBuffer = (char*)malloc(fileSize+1);
 
                   std::string sizeAccept = std::to_string(fileSize); //prepare size for sending
 
@@ -172,7 +175,7 @@ try{
 
                  if((msg_size = write(listenSocket, fileBuffer, fileSize)) < 0) //Send file
                    error("Error writing");
-
+                    free(fileBuffer);
                     fclose(fd); // close file
                   ///////////////////////////////////////////////////////////////////////////////
   }

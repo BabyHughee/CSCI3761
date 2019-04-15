@@ -176,7 +176,8 @@ try{
         fileSize = ftell(fd); //the
         rewind(fd); //filesize
 
-        char fileBuffer[fileSize]; //initalize buffer to appropriate size
+        // char fileBuffer[fileSize]; //initalize buffer to appropriate size
+        void*fileBuffer = (char*)malloc(fileSize+1);
 
         std::string sizeAccept = std::to_string(fileSize); //prepare size for sending
 
@@ -190,7 +191,7 @@ try{
        if((msg_size = write(in_Connect, fileBuffer, fileSize)) < 0) //Send the file
          error("Error writing");
 
-
+        free(fileBuffer);
         fclose(fd); //close the file
         ///////////////////////////////////////////////////////////////////////////////
   }
@@ -219,13 +220,16 @@ try{
 
     // cout << atoi(buffer) << endl;
     int fileSize = atoi(buffer);
-    char fileBuffer[fileSize]; //file buffer is prepared
+    // char fileBuffer[fileSize]; //file buffer is prepared
+    void*fileBuffer = (char*)malloc(fileSize+1);
 
 
     if((msg_size = read(in_Connect, fileBuffer, fileSize + 1)) < 0) //read clients file
       error("Error reading");
 
     fwrite(fileBuffer, 1, fileSize, fp); //write out the clients file
+
+    free(fileBuffer);
 
     fclose(fp); //close the file
     ////////////////////////////////////////////////////////////////////////////////
