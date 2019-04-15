@@ -124,7 +124,7 @@ while(!m_exit){
    cout << ">Client"<< getpid() << ": " << buffer << endl; //show client with pid
 
 ///////////////////////////////
-// try{
+try{
   if(strncmp(buffer,"catalog",7) == 0){
     temp =  getCatalog();
   }
@@ -152,23 +152,23 @@ while(!m_exit){
 
         FILE *fd = fopen(filename.c_str(), "rb"); //read that binary
 
-        // //////////////////////////////////////check availability////////////////////////
-        //                   if(fd == NULL){
-        //                     char sendFailure[] = "No";
-        //                     fclose(fd); //close the file
-        //
-        //                     if((msg_size = write(in_Connect, sendFailure, sizeof(sendFailure))) < 0) //not a success
-        //                       error("Error writing");
-        //
-        //                     throw("File_Not_Found");
-        //                   }else{
-        //
-        //                     char sendSuccess[] = "Yes";
-        //
-        //                     if((msg_size = write(in_Connect, sendSuccess, sizeof(sendSuccess))) < 0) //not a success
-        //                       error("Error writing");
-        //                   }
-        // //////////////////////////////////////check availability////////////////////////
+        //////////////////////////////////////check availability////////////////////////
+                          if(fd == NULL){
+                            char sendFailure[] = "No";
+                            fclose(fd); //close the file
+
+                            if((msg_size = write(in_Connect, sendFailure, sizeof(sendFailure))) < 0) //not a success
+                              error("Error writing");
+
+                            throw("File_Not_Found");
+                          }else{
+
+                            char sendSuccess[] = "Yes";
+
+                            if((msg_size = write(in_Connect, sendSuccess, sizeof(sendSuccess))) < 0) //not a success
+                              error("Error writing");
+                          }
+        //////////////////////////////////////check availability////////////////////////
 
         int fileSize;
 
@@ -233,7 +233,7 @@ while(!m_exit){
   else {temp = "**invalid command**";}
 
 
-// }catch(const char* fileFailure){temp = fileFailure;}
+}catch(const char* fileFailure){temp = fileFailure;}
 
     /* ---------Return Message--------- */
 
