@@ -114,13 +114,14 @@ try{
                           if((msg_size = read(listenSocket, avalabilityChecker, sizeof(avalabilityChecker) + 1)) < 0) //read status
                             error("Error reading");
                                     if(strncmp(avalabilityChecker, "No",2) == 0){
-                                      throw("File_Not_Found");
+                                      throw("Download_File_Not_Found");
                                     }else{
                                       /*DO NOTHING*/
                                     }
                   //////////////////////////////////////read availability////////////////////////
 
-                  FILE* fp = fopen(output.c_str(), "wb"); //open file in write binary
+
+                  FILE* fp = fopen(output.c_str(), "wb+"); //open file in write binary
 
                   if((msg_size = read(listenSocket, buffer, 255)) < 0) //read size
                     error("Error reading");
@@ -128,64 +129,97 @@ try{
 
                   // cout << atoi(buffer) << endl;
                   int fileSize = atoi(buffer);
-                  // char fileBuffer[fileSize]; //save size
-                  void*fileBuffer = (char*)malloc(fileSize+1);
+                  int totalSize = 0;
+                  msg_size = 1;
+                  char fileBuffer[1024]; //save size
 
-                  if((msg_size = read(listenSocket, fileBuffer, fileSize + 1)) < 0) //read file
-                    error("Error reading");
+                  // cout << fileSize;
 
-                  fwrite(fileBuffer, 1, fileSize, fp); //save file
+                  do{
+                    // cout << totalSize << endl;
 
-                  free(fileBuffer);
+                    if((msg_size = read(listenSocket, fileBuffer, 1024)) < 0) //read file
+                      error("Error reading");
+
+
+                    fwrite(fileBuffer, 1, msg_size, fp); //save file
+
+                    totalSize += msg_size;
+                  }while((totalSize < fileSize) && !(msg_size <= 0));
+
                   fclose(fp); //close
 ////////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"upload",6) == 0){
-                  ////////////////////////////////FILE SENDER////////////////////////////////////
-                  std::string uploadcmd[3];
+    ////////////////////////////////FILE SENDER////////////////////////////////////
 
-                  std::stringstream split(buffer); //split command into components
-                  for(int i = 0; i < 3; i++){
-                    split >> uploadcmd[i];
-                  }
+    std::string downloadcmd[3];
 
-                  bzero(buffer,256);
+    std::stringstream split(buffer); //parse command into sections
+    for(int i = 0; i < 3; i++){
+      split >> downloadcmd[i];
+      }
 
-                  std::string filename = uploadcmd[1];
+    bzero(buffer,256);
 
-                  FILE *fd = fopen(filename.c_str(), "rb"); //open in read binary
+    std::string filename = downloadcmd[1];
 
-                  int fileSize;
+    FILE *fd = fopen(filename.c_str(), "rb"); //read that binary
 
-                  fseek(fd, 0L, SEEK_END); //get file size
-                  fileSize = ftell(fd);
-                  rewind(fd);
+    //////////////////////////////////////check availability////////////////////////
+                      if(fd == NULL){
+                        char sendFailure[] = "No";
+                        fclose(fd); //close the file
 
-                  // char fileBuffer[fileSize]; //declare the buffer at proper file size
-                  void*fileBuffer = (char*)malloc(fileSize+1);
+                        if((msg_size = write(listenSocket, sendFailure, sizeof(sendFailure))) < 0) //not a success
+                          error("Error writing");
 
-                  std::string sizeAccept = std::to_string(fileSize); //prepare size for sending
+                        throw("File_Not_Found");
+                      }else{
 
-                  // cout << fileSize << endl;
+                        char sendSuccess[] = "Yes";
 
-                  if((msg_size = write(listenSocket, sizeAccept.c_str(), 255) < 0)) //Send size
-                    error("Error writing");
+                        if((msg_size = write(listenSocket, sendSuccess, sizeof(sendSuccess))) < 0) //not a success
+                          error("Error writing");
+                      }
+    //////////////////////////////////////check availability////////////////////////
 
-                  fread( fileBuffer , fileSize, 1 , fd); //read in the file
+    int fileSize;
 
-                 if((msg_size = write(listenSocket, fileBuffer, fileSize)) < 0) //Send file
-                   error("Error writing");
-                    free(fileBuffer);
-                    fclose(fd); // close file
-                  ///////////////////////////////////////////////////////////////////////////////
+    fseek(fd, 0L, SEEK_END); //find
+    fileSize = ftell(fd); //the
+    rewind(fd); //filesize
+
+    std::string sizeAccept = std::to_string(fileSize); //prepare size for sending
+
+    // cout << fileSize << endl;
+    if((msg_size = write(listenSocket, sizeAccept.c_str(), 255) < 0)) //Send size
+      error("Error writing");
+
+
+    int totalSize = 0;
+    msg_size = 0;
+    char fileBuffer[1024]; //save size
+
+    do{
+      bzero(fileBuffer, 1024);
+      fread( fileBuffer, sizeof(fileBuffer), 1, fd); //read in  the file
+
+      if((msg_size = write(listenSocket, fileBuffer, sizeof(fileBuffer))) < 0) //Send the file
+        error("Error writing");
+
+        totalSize += msg_size;
+    }while((totalSize < fileSize) && !(msg_size <= 0));
+
+    fclose(fd); //close the file
+    ///////////////////////////////////////////////////////////////////////////////
   }
   else if(strncmp(buffer,"bye",3) == 0){ //set exit
     m_exit = true;
   }
 
-}catch(const char* failMessage){ }
+}catch(const char* failMessage){ cout << failMessage << endl;}
     /* ---------Recieve--------- */
-  bzero(buffer,256);
 
   if((msg_size = read(listenSocket, buffer, 256)) < 0) //read handler from server
     error("Error reading");

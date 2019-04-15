@@ -176,74 +176,95 @@ try{
         fileSize = ftell(fd); //the
         rewind(fd); //filesize
 
-        // char fileBuffer[fileSize]; //initalize buffer to appropriate size
-        void*fileBuffer = (char*)malloc(fileSize+1);
-
         std::string sizeAccept = std::to_string(fileSize); //prepare size for sending
 
         // cout << fileSize << endl;
-
         if((msg_size = write(in_Connect, sizeAccept.c_str(), 255) < 0)) //Send size
           error("Error writing");
 
-        fread( fileBuffer , fileSize, 1 , fd); //read in  the file
 
-       if((msg_size = write(in_Connect, fileBuffer, fileSize)) < 0) //Send the file
-         error("Error writing");
+        int totalSize = 0;
+        msg_size = 0;
+        char fileBuffer[1024]; //save size
 
-        free(fileBuffer);
+        do{
+          bzero(fileBuffer, 1024);
+          fread( fileBuffer, sizeof(fileBuffer), 1, fd); //read in  the file
+
+          if((msg_size = write(in_Connect, fileBuffer, sizeof(fileBuffer))) < 0) //Send the file
+            error("Error writing");
+
+            totalSize += msg_size;
+        }while((totalSize < fileSize) && !(msg_size <= 0));
+
         fclose(fd); //close the file
         ///////////////////////////////////////////////////////////////////////////////
-  }
-  else if(strncmp(buffer,"upload",6) == 0){
-    temp = "uploaded";
-    ////////////////////////////////FILE RECIEVER////////////////////////////////////
-
-    std::string uploadcmd[3];
-
-    std::stringstream split(buffer); //parse command into sections
-    for(int i = 0; i < 3; i++){
-      split >> uploadcmd[i];
-    }
-      split >> uploadcmd[2]; //catch any stragglers after a period
+  }else if(strncmp(buffer,"upload",6) == 0){
+      temp = "uploaded";
+      ////////////////////////////////FILE RECIEVER////////////////////////////////////
 
 
-    bzero(buffer, 256);
+                        std::string downloadcmd[3];
 
-    std::string output = uploadcmd[2];
+                        std::stringstream split(buffer); //parse command into components
+                        for(int i = 0; i < 3; i++){
+                          split >> downloadcmd[i];
+                        }
+                        bzero(buffer, 256);
 
+                        std::string output = downloadcmd[2];
 
-    FILE* fp = fopen(output.c_str(), "wb"); //open file in write binary
-
-    if((msg_size = read(in_Connect, buffer, 255)) < 0) //read server's response
-      error("Error reading");
-
-    // cout << atoi(buffer) << endl;
-    int fileSize = atoi(buffer);
-    // char fileBuffer[fileSize]; //file buffer is prepared
-    void*fileBuffer = (char*)malloc(fileSize+1);
-
-
-    if((msg_size = read(in_Connect, fileBuffer, fileSize + 1)) < 0) //read clients file
-      error("Error reading");
-
-    fwrite(fileBuffer, 1, fileSize, fp); //write out the clients file
-
-    free(fileBuffer);
-
-    fclose(fp); //close the file
-    ////////////////////////////////////////////////////////////////////////////////
-  }
-  else {temp = "**invalid command**";}
+                        //////////////////////////////////////read availability////////////////////////
+                        char avalabilityChecker[20];
+                                if((msg_size = read(in_Connect, avalabilityChecker, sizeof(avalabilityChecker) + 1)) < 0) //read status
+                                  error("Error reading");
+                                          if(strncmp(avalabilityChecker, "No",2) == 0){
+                                            throw("Download_File_Not_Found");
+                                          }else{
+                                            /*DO NOTHING*/
+                                          }
+                        //////////////////////////////////////read availability////////////////////////
 
 
-}catch(const char* fileFailure){temp = fileFailure;}
+                        FILE* fp = fopen(output.c_str(), "wb+"); //open file in write binary
 
+                        if((msg_size = read(in_Connect, buffer, 255)) < 0) //read size
+                          error("Error reading");
+
+
+                        // cout << atoi(buffer) << endl;
+                        int fileSize = atoi(buffer);
+                        int totalSize = 0;
+                        msg_size = 1;
+                        char fileBuffer[1024]; //save size
+
+                        // cout << fileSize;
+
+                        do{
+                          // cout << totalSize << endl;
+
+                          if((msg_size = read(in_Connect, fileBuffer, 1024)) < 0) //read file
+                            error("Error reading");
+
+
+                          fwrite(fileBuffer, 1, msg_size, fp); //save file
+
+                          totalSize += msg_size;
+                        }while((totalSize < fileSize) && !(msg_size <= 0));
+
+                        fclose(fp); //close
+      ////////////////////////////////////////////////////////////////////////////////
+  }else {
+    temp = "**invalid command**";}
+
+}catch(const char* fileFailure){temp = "done goofed";}
     /* ---------Return Message--------- */
 
-   if((msg_size = write(in_Connect, temp.c_str(), temp.size()) + 1) < 0) //Send message
+   if((msg_size = write(in_Connect, temp.c_str(), temp.size())) < 0) //Send message
      error("Error writing");
 }
+
+
             printf("Server: close connection from %s\n", \
                    inet_ntoa(clientAddress.sin_addr)); //Client disconnect message
             cout << "------------------------------>Client"<<getpid() << endl;
