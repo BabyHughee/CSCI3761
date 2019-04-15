@@ -145,7 +145,9 @@ try{
                     fwrite(fileBuffer, 1, msg_size, fp); //save file
 
                     totalSize += msg_size;
-                  }while((totalSize < fileSize) && !(msg_size <= 0));
+
+                     // && !(msg_size <= 0)
+                  }while((totalSize < fileSize));
 
                   fclose(fp); //close
 ////////////////////////////////////////////////////////////////////////////////
