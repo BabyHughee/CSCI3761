@@ -2,11 +2,17 @@
 #define KAESTLAB3_H
 
 #include <iostream>
-#include <stdio.h>
 #include <sys/time.h>
+#include <fstream>
+#include "exceptionStatus.h"
+#include <vector>
 
 
-void readIn();
+struct connectNode{  int node1;  int node2; int cost; }; //holds network
+
+
+exception_status readInNetwork(std::string, std::vector<connectNode>&, int); //read in network
+
 
 
 
