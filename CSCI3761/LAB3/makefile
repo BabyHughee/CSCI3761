@@ -1,9 +1,9 @@
 CC=g++
 LD=g++
-CC_FLAGS=-g -std=c++11
+CC_FLAGS= -O3 -std=c++11
 OBJECTS= kaestLab3.o kaestLab3_main.o
 TEST= test.o implementation.o
-OB= kaest_CSCI3761_LAB3
+OB= kae2414
 BINARY=MST
 
 all: $(OBJECTS) #docs
@@ -22,6 +22,6 @@ docs:
 	doxygen doxygen.cfg
 
 zip:
-	zip -r $(OB).zip *.cpp *.h *.txt *.csv *.pdf README makefile
-	cp $(OB).zip ~/Desktop/
-	cp -f $(OB).zip ~/kaest/CSCI2421/completeZips
+	zip -r $(OB).tar *.cpp *.h *.pdf README makefile # *.txt *.csv
+	cp $(OB).tar ~/Desktop/
+	#cp -f $(OB).zip ~/kaest/CSCI3761/completeZips

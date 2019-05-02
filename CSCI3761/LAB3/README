@@ -2,23 +2,29 @@
 TRYSTAN KAES
 ID 108652414 (kaest)
 
-CSCI [class]
+CSCI 3761
 
 Assignment
 
-****************************************
-** TO COMPILE ----- 'make all'	      **
-** TO RUN --------- './name' #binary  **
-****************************************
+**************************************************************
+************ TO COMPILE ----- 'make all'	               *****
+************ TO RUN --------- './MST' [filename] #binary *****
+**************************************************************
 
 DESCRIPTION:
-
-
+We have discussed the usage of minimum spanning tree when you try to extend LAN
+segments with link-layer switches (bridges). In this programming assignment, you
+will be implementing Minimum Spanning Tree (MST) Algorithm with either C or C++.
 
 ************Structure***********
-
-
-
+This program takes a command line argument of the input file.
+At a base level there exists a in line interface "exceptionStatus.h" used to
+inform the user and the program of what went wrong where. The file
+"kaestLab3_main.cpp" is the main driver function. It makes all function calls
+and outputs the visuals. "kaestLab3.h" contains the necessary structs to execute
+and all the function prototypes. "kaestLab3.cpp" contains all the implementations
+of the prototype functions and the functions that are depended on which are not
+contained in the interface file.
 
 
 **************Status************
@@ -37,15 +43,12 @@ DESCRIPTION:
 **********************
 
 
-XXX: Future implementations will. . .
-
-
 
 
 ************Copyright***********
 
 
-   Copyright {2018} {Trystan Kaes}
+   Copyright {2019} {Trystan Kaes}
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
