@@ -1,6 +1,6 @@
 CC=g++
 LD=g++
-CC_FLAGS= -O3 -std=c++11
+CC_FLAGS= -Ofast -std=c++11
 OBJECTS= kaestLab3.o kaestLab3_main.o
 TEST= test.o implementation.o
 OB= kae2414

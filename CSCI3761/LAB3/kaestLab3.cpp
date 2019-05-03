@@ -67,31 +67,28 @@ std::vector<connectNode> sortByWeight(std::vector<connectNode> &toSort){
      return sorted; //return what was accomplished
 }
 
-/**Function to find a set of i
-  *\param subset is our list of good connections
-  *\param i is to be found
+/**Function to find a set of i and parents
+  *\param subset is our list of parents and rank
+  *\param i is to be inserted correctly
   *\return return the parent of i */
-int find(struct subNet subsets[], int& i)
-{
-    if (subsets[i].parent != i) //if the subset[i]'s parent isn't i
-        subsets[i].parent = find(subsets, subsets[i].parent); //set equal to the prior generations
-
+int findCycle(struct subNet subsets[], int& i)
+{   //if the subset[i]'s parent isn't i
+    //set equal to the prior generations
+    (subsets[i].parent != i) ? subsets[i].parent = findCycle(subsets, subsets[i].parent) : i ;
     return subsets[i].parent;
 }
 
-void Union(struct subNet subset[], int& x, int& y)
+void UnionNodes(struct subNet subset[], int& x, int& y)
 {
-    int rootOfx = find(subset, x); //set x's root to the root of x
-    int rootOfy = find(subset, y); //set y's root to the root of y
+    int rootOfx = findCycle(subset, x); //set x's root to the root of x
+    int rootOfy = findCycle(subset, y); //set y's root to the root of y
 
-    if (subset[rootOfx].rank < subset[rootOfy].rank) //if the subset at x < y
+    if (subset[rootOfx].rank < subset[rootOfy].rank){ //if the subset at x < y
         subset[rootOfx].parent = rootOfy; //set y as parent
-    else if (subset[rootOfx].rank > subset[rootOfy].rank) //x > y
+      }else if (subset[rootOfx].rank > subset[rootOfy].rank){ //x > y
         subset[rootOfy].parent = rootOfx; //set x as parent of y
-
-    else // x = y
-    {
-        subset[rootOfy].parent = rootOfx; //choose x at random
+      }else // x = y
+    {   subset[rootOfy].parent = rootOfx; //choose x at random
         subset[rootOfx].rank++; //increase it's rank
     }
 }
@@ -101,11 +98,10 @@ void Union(struct subNet subset[], int& x, int& y)
    *\param network is the list of all possible connections  */
 void findMST(struct connectNode result[], std::vector<connectNode> &network, int &size){
 
-      int e = 0;  // index for result
+      int j = 0;  // index for result
       int i = size;  // index for edges
 
-      //prepare memory
-      struct subNet *subnets =  new struct subNet[size];
+      struct subNet *subnets =  new struct subNet[size]; //reserve memory
 
       // create subnets
       for (int i = 0; i <= size; ++i)
@@ -114,21 +110,21 @@ void findMST(struct connectNode result[], std::vector<connectNode> &network, int
           subnets[i].rank = 0;
       }
 
-      while (e < size - 1)// looking for size - 1 edges
+      while (j < size - 1)// looking for size - 1 edges
       {
           //take the smallest non double edge
           struct connectNode next_path = network[i];
 
           i++; //increment
 
-          int x = find(subnets, next_path.node1); //find cycle
-          int y = find(subnets, next_path.node2); //find cycle
+          int x = findCycle(subnets, next_path.node1); //find cycle
+          int y = findCycle(subnets, next_path.node2); //find cycle
 
           if (x != y) //if there is a cycle
           {
-              result[e] = next_path; //this is a good addition
-              e++;
-              Union(subnets, x, y); //add in what we found
+              result[j] = next_path; //this is a good addition
+              UnionNodes(subnets, x, y); //add in what we found
+              j++;
           }
           //otheriwise that sucked. boo
       }
