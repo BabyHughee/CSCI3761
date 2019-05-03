@@ -71,7 +71,7 @@ std::vector<connectNode> sortByWeight(std::vector<connectNode> &toSort){
   *\param subset is our list of good connections
   *\param i is to be found
   *\return return the parent of i */
-int find(struct subNet subsets[], int i)
+int find(struct subNet subsets[], int& i)
 {
     if (subsets[i].parent != i) //if the subset[i]'s parent isn't i
         subsets[i].parent = find(subsets, subsets[i].parent); //set equal to the prior generations
@@ -79,7 +79,7 @@ int find(struct subNet subsets[], int i)
     return subsets[i].parent;
 }
 
-void Union(struct subNet subset[], int x, int y)
+void Union(struct subNet subset[], int& x, int& y)
 {
     int rootOfx = find(subset, x); //set x's root to the root of x
     int rootOfy = find(subset, y); //set y's root to the root of y
@@ -113,8 +113,6 @@ void findMST(struct connectNode result[], std::vector<connectNode> &network, int
           subnets[i].parent = i;
           subnets[i].rank = 0;
       }
-
-      i = 0;
 
       while (e < size - 1)// looking for size - 1 edges
       {
