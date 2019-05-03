@@ -1,36 +1,6 @@
 #include "kaestLab3.h"
 
 
-// struct connectNode& organizeTree(struct connectNode mst[], int &size){
-//   struct connectNode ordered[size];
-//   bool exit = false;
-//   int e = 0;
-//   int i = 0;
-//   while(!exit){
-//     for(int j = i; j < size; j++){
-//       if(ordered[e].node2 == mst[j].node1){
-//         ordered[++e] = mst[j];
-//         i++;
-//       }
-//       else{
-//         j++;
-//       }
-//
-//
-//     }
-//
-//     if(i == size){
-//       exit = true;
-//     }
-//   }
-//
-//   for(int q = 0; q < size; q++){
-//       std::cout << "(" << ordered[q].node1 << "," << ordered[q].node2 << ")" << std::endl;
-//     }
-// }
-
-
-
 
 /**A Utitlity function for the merge sort
    *\param left is the left segmented node list
@@ -135,7 +105,7 @@ void findMST(struct connectNode result[], std::vector<connectNode> &network, int
       int i = 0;  // index for edges
 
       //prepare memory
-      struct subNet *subnets =  (struct subNet*) malloc( size * sizeof(struct subNet) );
+      struct subNet *subnets =  new struct subNet[size + 1];
 
       // create subnets
       for (int i = 0; i < size; ++i)
@@ -180,8 +150,7 @@ exception_status readInNetwork(std::string file, std::vector<connectNode> &input
         ///////////check file/////////
       if (!infile.is_open() || infile.fail()) {
           // set error
-          error.badCall("file_invalid");
-          return error; // if the file didn't read, no need to continue.
+          return error.badCall("file_invalid"); // if the file didn't read, no need to continue.
       }
 
     infile >> numberNodes;//find initial node size
@@ -217,9 +186,8 @@ exception_status readInNetwork(std::string file, std::vector<connectNode> &input
 
     if (infile.fail()) {
         // set error
-        error.badCall("input_error_line_");
         error.which = count;
-        return error; // if the file didn't read correctly, no need to continue.
+        return error.badCall("input_error_line_"); // if the file didn't read correctly, no need to continue.
     }
   }
 
