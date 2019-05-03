@@ -108,7 +108,7 @@ void findMST(struct connectNode result[], std::vector<connectNode> &network, int
       struct subNet *subnets =  new struct subNet[size];
 
       // create subnets
-      for (int i = 0; i < size; ++i)
+      for (int i = 0; i <= size; ++i)
       {
           subnets[i].parent = i;
           subnets[i].rank = 0;
