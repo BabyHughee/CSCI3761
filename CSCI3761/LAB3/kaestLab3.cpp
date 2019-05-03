@@ -105,7 +105,7 @@ void findMST(struct connectNode result[], std::vector<connectNode> &network, int
       int i = 0;  // index for edges
 
       //prepare memory
-      struct subNet *subnets =  new struct subNet[size + 1];
+      struct subNet *subnets =  new struct subNet[size];
 
       // create subnets
       for (int i = 0; i < size; ++i)
@@ -114,7 +114,7 @@ void findMST(struct connectNode result[], std::vector<connectNode> &network, int
           subnets[i].rank = 0;
       }
 
-      while (e < size - 2)// looking for size - 1 edges
+      while (e < size - 1)// looking for size - 1 edges
       {
           //take the smallest non double edge
           struct connectNode next_path = network[i];
