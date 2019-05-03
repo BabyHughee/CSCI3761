@@ -126,7 +126,8 @@ void findMST(struct connectNode result[], std::vector<connectNode> &network, int
 
           if (x != y) //if there is a cycle
           {
-              result[e++] = next_path; //this is a good addition
+              result[e] = next_path; //this is a good addition
+              e++;
               Union(subnets, x, y); //add in what we found
           }
           //otheriwise that sucked. boo
