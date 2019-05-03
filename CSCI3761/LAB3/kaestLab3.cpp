@@ -102,7 +102,7 @@ void Union(struct subNet subset[], int& x, int& y)
 void findMST(struct connectNode result[], std::vector<connectNode> &network, int &size){
 
       int e = 0;  // index for result
-      int i = 0;  // index for edges
+      int i = size;  // index for edges
 
       //prepare memory
       struct subNet *subnets =  new struct subNet[size];
