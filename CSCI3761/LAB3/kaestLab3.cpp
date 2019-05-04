@@ -32,7 +32,7 @@ void UnionNodes(struct subNet subset[], int& x, int& y)
 void findMST(struct connectNode result[], std::vector<connectNode> &network, int &size){
 
       int j = 0;  // index for result
-      int i = size;  // index for edges
+      int i = 0;  // index for edges
 
       struct subNet *subnets =  new struct subNet[size]; //reserve memory
 
@@ -87,30 +87,32 @@ exception_status readInNetwork(std::string file, std::vector<connectNode> &input
     infile >> std::ws; //strip initial whitespace
 
     int count = 0;
+    char buf[128];
+    input.reserve(numberNodes * numberNodes);
 
     while(!infile.eof()){
+      int node1, node2, cost;
 
       count++;
 
-      connectNode tempContainer;
-      std::string temp;
-
       //---------node1--------
-      std::getline(infile, temp, ' '); //read the current word up to space
+      infile.getline(buf, sizeof(buf), ' '); //read the current word up to space
 
-      tempContainer.node1 = std::atoi(temp.c_str());
+      node1 = std::atoi(buf);
 
       //---------node2--------
-      std::getline(infile, temp, ' '); //read the current word up to space
+      infile.getline(buf, sizeof(buf), ' '); //read the current word up to space
 
-      tempContainer.node2 = std::atoi(temp.c_str());
+      node2 = std::atoi(buf);
 
       //---------cost--------
-      std::getline(infile, temp, '\n'); //read the current word up to endline
+      infile.getline(buf, sizeof(buf)); //read the current word up to endline
 
-      tempContainer.cost = std::atoi(temp.c_str());
+      cost = std::atoi(buf);
 
-      input.emplace_back(tempContainer);
+      if(node1 != node2){ //avoid the loops
+      input.emplace_back(node1, node2, cost);
+      }
 
       infile >> std::ws;
 
