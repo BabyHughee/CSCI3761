@@ -29,7 +29,8 @@ if (argc != 2){
   error = readInNetwork(argv[1], network, networkSize); //read in the network
   if(error.error == true){ std::cout << error.status << std::endl; } //output error
   connectNode foundMST[networkSize - 1];
-  network = sortByWeight(network); //sort the nodes by weight
+
+  std::sort(network.begin(), network.end(), compareNode); //sort by cost
 
   findMST(foundMST, network, networkSize);
 
